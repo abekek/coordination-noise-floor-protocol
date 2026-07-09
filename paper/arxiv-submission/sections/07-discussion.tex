@@ -27,6 +27,40 @@ validated here. A shared trace store also opens security surfaces
 (poisoned writes, cross-principal exfiltration); the prototype
 assumes a trusted single-tenant deployment.
 
+\paragraph{P0: oracle positive control (implemented).}
+The protocol shows naive coordination does not clear the floor
+but has not yet demonstrated that it \emph{would} detect a real
+gain---a measurement-sensitivity gap a reviewer correctly
+flagged. We have implemented an \texttt{oracle} arm in the
+released harness: it rides pull's exact activation semantics
+(inert at trial $0$, so the floor measurement is undisturbed)
+but, once a prior trial has failed, injects the task's
+\emph{golden action sequence} from the benchmark's evaluation
+criteria---perfect coordination content on the same surface.
+Coordination-active pass$^k$ against \texttt{no\_coord} on the
+oracle arm upper-bounds what any reader-side mechanism could
+show on this benchmark. Run at the headline configuration (same
+$100$ seed-$42$ tasks, Haiku $4.5$, $T{=}0$), the oracle
+confirms trial-$0$ inertness ($-3$\,pp paired gap vs.\
+\texttt{no\_coord}, inside the envelope) and lifts recovery on
+its trial-$0$-failed subset from $0.35$ to $0.43$
+(trial-$1$ marginal $0.60$ vs.\ $0.54$)---but the paired
+coordination-active contrast is $8/6/21$ (W/L/T) at $n{=}35$,
+$p{=}0.79$: \emph{even ground-truth guidance does not separate
+at this $n$}. The direction is right, so the metric reads
+real gains; the binding constraint is the subset itself:
+$57\%$ of oracle trial-$1$ attempts fail with the golden action
+sequence in the system prompt, i.e.\ most coordination-active
+failures on this benchmark are not knowledge-limited
+(user-simulator dynamics, policy-confirmation flows). This
+sharpens the negative reading of
+\S\ref{sec:eval:results:retail-intercept}: no reader-side
+mechanism could have certified a gain here, because a
+perfect-content oracle cannot. Certifying coordination requires
+benchmarks whose coordination-active subsets are
+knowledge-limited by construction---or the pre-registered
+Sonnet $n{\geq}250$ scale.
+
 \paragraph{P2 (selective intercept), preliminary signal.}
 A score-gated intercept that fires only when a peer event is
 relevant, novel, and decision-proximal beat vanilla intercept on

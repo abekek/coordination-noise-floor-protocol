@@ -89,6 +89,13 @@ paired variance between two configuration-equivalent harness
 runs; we label it a \emph{coordination noise floor} because it
 is the gate any coordination claim on this benchmark must
 clear, not because the variance itself is coordination-specific.
+One structural consequence is worth making explicit: the floor
+estimate is invariant to writer parameters such as $K$ by
+construction. The writer fires only at the close of a trial with
+reward $<1$, so no writer setting can perturb a trial-$0$
+payload; $K$ shapes trial-$1$ coordination \emph{content}, and
+its effects are diagnosed separately (M1--M3,
+\S\ref{sec:eval:results:retail-intercept}).
 
 At trial~$0$ the store is empty, so reader hooks are no-ops. The
 three arms share the agent system prompt
@@ -472,6 +479,23 @@ protocol. Applying a two-proportion $z$-test at $\alpha{=}0.05$,
 power $0.80$, baseline $p_1{=}0.50$, Table~\ref{tab:mde} gives
 the required sample sizes.
 
+\paragraph{What transfers, and a cheap probe.}
+Re-running the full paired protocol per (model, domain) pair is
+the gold standard but not the entry cost. The floor's observed
+variation tracks two identifiable drivers: how much of the task
+set sits near the model's decision boundary (Haiku airline
+collapses to $0$\,pp gaps because most trial-$0$ outcomes are
+ties; Sonnet retail shifts which tasks are marginal, flipping
+gap direction), and the user-simulator's sampled-output entropy,
+which seeds the E3 drift. Both are estimable from a paired
+$n{=}30$ clean-contrast probe (baseline vs.\ an inert-hooked
+baseline) before any full sweep: our own $n{=}30$ probes are
+what surfaced the airline collapse and the Sonnet direction
+flip. The practical rule we propose: report a same-model paired
+probe alongside any coordination claim, and escalate to the
+full $n{\geq}100$ protocol only when the claimed effect is
+within ${\sim}2\times$ the probe's upper CI.
+
 \begin{table}[t]
 \centering
 \caption{Minimum sample size (tasks per arm) to detect a
@@ -537,7 +561,9 @@ whether the published gap is below the clean-contrast pooled
 upper CI of $12$\,pp ($\downarrow$), inside the $12$--$15$\,pp
 band up to the largest pooled upper CI ($=$), or above
 $15$\,pp ($\uparrow$); the floor itself varies by model
-and domain (\S\ref{sec:eval:results:airline}).}
+and domain (\S\ref{sec:eval:results:airline}). Read $\downarrow$
+as \emph{unresolved against a same-setting paired floor}, never
+as \emph{refuted}.}
 \label{tab:literature-vs-floor}
 \small
 \setlength{\tabcolsep}{4pt}
