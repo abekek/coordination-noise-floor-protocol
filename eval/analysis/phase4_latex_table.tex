@@ -1,0 +1,29 @@
+% Phase 4 — TravelPlanner Benchmark Ablation (claude-haiku-4-5, 30 queries × 3 seeds = 90 trials/condition)
+% Merged from lean_travelplanner_20260601_1622 (B1/B2/B3/ET_MCP_default) +
+%           lean_travelplanner_20260601_1903 (ET_MCP ablation variants)
+\begin{table}[t]
+\centering
+\caption{TravelPlanner ablation results ($n=30$ queries $\times$ 3 seeds per condition, 90 trials each).
+  SR = task success rate (\%), Tok\textsubscript{in} = mean input tokens per trial,
+  Redundant = mean fraction of tool calls re-exploring a previously-failed path.
+  Model: \texttt{claude-haiku-4-5}; temperature 0.}
+\label{tab:tp-ablation}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Condition} & \textbf{SR (\%)} & \textbf{LLM calls} & \textbf{Tok\textsubscript{in}} & \textbf{Redundant (\%)} \\
+\midrule
+\multicolumn{5}{l}{\textit{Baselines}} \\
+B1~Full context    & 1.1 & 11.4 & 27{,}521 & 9.8 \\
+B2~Summarization   & 1.1 &  9.2 & 24{,}121 & 6.8 \\
+B3~CA-MCP style    & \textbf{2.2} & 10.6 & 26{,}559 & 7.9 \\
+\midrule
+\multicolumn{5}{l}{\textit{ET-MCP ablations}} \\
+ET-MCP (default)          & 1.1 & 11.5 & 32{,}502 & \textbf{3.9} \\
+\quad w/o query            & 1.1 & 12.1 & 29{,}701 & 12.5 \\
+\quad random query         & 0.0 & 11.9 & 32{,}142 &  4.2 \\
+\quad push-negative        & 0.0 & 11.8 & 31{,}796 &  5.2 \\
+\quad failure-strict       & 0.0 & 12.2 & 30{,}084 & 13.5 \\
+\quad write-everything     & 2.2 & 11.9 & 31{,}753 &  3.6 \\
+\bottomrule
+\end{tabular}
+\end{table}

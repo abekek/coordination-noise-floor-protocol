@@ -1,0 +1,113 @@
+% Side-by-side architecture diagram comparing pull and intercept.
+% Two-column figure (figure* in 04-architecture.tex).
+% Semantic color encoding consistent across panels:
+%   blue   = store read (curated summary / consult)
+%   gray   = ordinary agent <-> tool I/O
+%   red    = framework-injected / peer-warning payload (intercept only)
+% Step labels are numbered per panel (P1..P3 / I1..I5); the caption
+% decodes every step in prose so the figure itself stays uncluttered.
+% Requires: \usetikzlibrary{positioning,arrows.meta,fit,backgrounds,shapes.geometric,calc}
+\begin{tikzpicture}[
+  font=\small,
+  agent/.style={draw, rectangle, rounded corners=2pt,
+                minimum width=1.7cm, minimum height=0.7cm,
+                inner sep=2pt, fill=blue!10, align=center},
+  tool/.style={draw, rectangle, rounded corners=2pt,
+               minimum width=1.7cm, minimum height=0.7cm,
+               inner sep=2pt, fill=green!10, align=center},
+  framework/.style={draw, rectangle, rounded corners=2pt, dashed, thick,
+                    minimum width=2.4cm, minimum height=0.7cm,
+                    inner sep=2pt, fill=orange!12, align=center},
+  store/.style={draw, cylinder, shape border rotate=90, aspect=0.25,
+                minimum width=2.0cm, minimum height=0.8cm,
+                inner sep=2pt, fill=gray!12, align=center, font=\footnotesize},
+  flow/.style={-{Stealth[length=2mm,width=1.8mm]}, thick, draw=black!65, line width=0.6pt},
+  flowread/.style={-{Stealth[length=2mm,width=1.8mm]}, thick, draw=blue!75!black, line width=0.75pt},
+  flowwarn/.style={-{Stealth[length=2mm,width=1.8mm]}, thick, draw=red!75!black, line width=0.85pt, dashed},
+  stepnum/.style={font=\bfseries\scriptsize, circle, draw=black!70, inner sep=0.4pt,
+               minimum size=3.6mm, fill=white},
+  stepwarn/.style={font=\bfseries\scriptsize, circle, draw=red!70!black, inner sep=0.4pt,
+                   minimum size=3.6mm, fill=red!8},
+  stepread/.style={font=\bfseries\scriptsize, circle, draw=blue!70!black, inner sep=0.4pt,
+                   minimum size=3.6mm, fill=blue!6},
+  panel/.style={draw=black!60, thick, rounded corners=4pt, inner sep=10pt, fill=white}
+]
+
+% =========================================================
+% LEFT PANEL: PULL  (agent-as-reader)
+% Layout: store top, agent + tool side-by-side below.
+% =========================================================
+\begin{scope}[local bounding box=pullbox]
+  \node[store]                    (s1) at (0, 2.2) {ET-MCP store};
+  \node[agent, below=14mm of s1]  (a1)              {Agent};
+  \node[tool, right=22mm of a1]   (t1)              {Tool};
+
+  % (P1) store -> agent: curated summary at trial start
+  \draw[flowread] (s1.south) -- (a1.north)
+    node[stepread, pos=0.45] {P1};
+
+  % (P2) agent -> tool: tool call (upper lane)
+  \draw[flow]
+    ([yshift=3mm]a1.east) -- ([yshift=3mm]t1.west)
+    node[stepnum, pos=0.5] {P2};
+
+  % (P3) tool -> agent: raw response (lower lane)
+  \draw[flow]
+    ([yshift=-3mm]t1.west) -- ([yshift=-3mm]a1.east)
+    node[stepnum, pos=0.5] {P3};
+\end{scope}
+\begin{scope}[on background layer]
+\node[panel, fit=(pullbox),
+      label={[font=\bfseries]above:Pull \emph{(agent-as-reader)}}] (pullpanel) {};
+\end{scope}
+
+% =========================================================
+% RIGHT PANEL: INTERCEPT  (framework-as-reader)
+% Layout: store top, framework below store, agent + tool side-by-side below framework.
+% Curved arrows so request (top) and response (bottom) lanes are clearly separable.
+% =========================================================
+\begin{scope}[xshift=10cm, local bounding box=icbox]
+  \node[store]                       (s2) at (0, 2.5) {ET-MCP store};
+  \node[framework, below=8mm of s2]  (fw)             {Framework};
+  \node[agent, below=22mm of fw, xshift=-22mm]   (a2) {Agent};
+  \node[tool,  below=22mm of fw, xshift=22mm]    (t2) {Tool};
+
+  % I4: framework consults store (vertical, straight)
+  \draw[flowread] (fw.north) -- (s2.south)
+    node[stepread, pos=0.5] {I4};
+
+  % I1: agent -> framework (upper curve, bending right/up)
+  \draw[flow, bend left=20]
+    (a2.north) to
+    node[stepnum, pos=0.55] {I1}
+    ([xshift=-3mm]fw.south);
+  % I5: framework -> agent (lower curve, bending right/down, red dashed)
+  \draw[flowwarn, bend left=20]
+    ([xshift=-6mm]fw.south) to
+    node[stepwarn, pos=0.45] {I5}
+    ([xshift=3mm]a2.north);
+
+  % I2: framework -> tool (upper curve, bending left/down)
+  \draw[flow, bend left=20]
+    ([xshift=3mm]fw.south) to
+    node[stepnum, pos=0.45] {I2}
+    (t2.north);
+  % I3: tool -> framework (lower curve, bending left/up)
+  \draw[flow, bend left=20]
+    ([xshift=-3mm]t2.north) to
+    node[stepnum, pos=0.55] {I3}
+    ([xshift=6mm]fw.south);
+\end{scope}
+\begin{scope}[on background layer]
+\node[panel, fit=(icbox),
+      label={[font=\bfseries]above:Intercept \emph{(framework-as-reader)}}] (icpanel) {};
+\end{scope}
+
+% Compact semantic legend below both panels (single line).
+\node[font=\scriptsize, below=2.5mm of pullpanel.south west, anchor=north west,
+      xshift=2mm] {%
+  \tikz[baseline=-0.5ex]{\draw[flowread] (0,0)--(0.55,0);}\;store read\quad
+  \tikz[baseline=-0.5ex]{\draw[flow] (0,0)--(0.55,0);}\;agent$\leftrightarrow$tool\quad
+  \tikz[baseline=-0.5ex]{\draw[flowwarn] (0,0)--(0.55,0);}\;injected \texttt{[PEER-WARNING]}};
+
+\end{tikzpicture}

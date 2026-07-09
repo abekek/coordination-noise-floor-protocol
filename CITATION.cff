@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this measurement protocol, harness, or data, please cite the paper below."
+title: "How Much Coordination Gain Is Real? A Paired Noise-Floor Protocol for Multi-Agent LLM Benchmarks"
+authors:
+  - family-names: Kaliyev
+    given-names: Alibek
+    affiliation: "The University of Texas at Austin"
+  - family-names: Maryanskyy
+    given-names: Artem
+    affiliation: "Uber"
+license: MIT
+repository-code: "https://github.com/abekek/coordination-noise-floor-protocol"
+url: "https://abekek.github.io/coordination-noise-floor-protocol/"
+preferred-citation:
+  type: conference-paper
+  title: "How Much Coordination Gain Is Real? A Paired Noise-Floor Protocol for Multi-Agent LLM Benchmarks"
+  authors:
+    - family-names: Kaliyev
+      given-names: Alibek
+    - family-names: Maryanskyy
+      given-names: Artem
+  collection-title: "KDD 2026 Workshop on Agentic AI Evaluation and Trustworthiness"
+  year: 2026
+  url: "https://abekek.github.io/coordination-noise-floor-protocol/"

@@ -1,0 +1,53 @@
+% v2 draft — additions to §1 introduction. These slot into the
+% existing intro after the 2x2-design-space paragraph and before the
+% Contributions list. Two paragraphs to add, plus a revised C2.
+
+% --- New paragraph after the 2x2 design-space discussion ---
+
+A second design axis cuts across the push/pull and post-hoc/runtime
+cells: who is the \emph{reader} of the coordination data—the agent
+or the framework.  Push designs (CA-MCP, LangGraph handoffs) hand
+the framework the writer-side decision and the agent the reader-side
+decision; pull designs as in v1 of ET-MCP give the agent both sides.
+The intercept layer we describe in
+\S\ref{sec:arch:pull-vs-intercept} is a fourth combination:
+framework on the reader side, MCP-conformant negative-knowledge
+events on the wire.  Intercept gives up the agent's ability to ask
+custom questions but eliminates the agent-side decision overhead of
+``remember to query'' and the round-trip latency of a separate
+\texttt{trace.query} call.  Empirically on a public benchmark
+(\S\ref{sec:eval:results:retail-intercept}), the intercept layer
+outperforms agent-driven pull, and pull does not outperform a
+no-coordination baseline at the scale we test.
+
+% --- Revised C2 contribution bullet (replaces v1's C2) ---
+
+\item \textbf{(C2) Architectural pivot: transparent peer-warning
+    injection.}  We introduce \emph{intercept}, a framework-side
+    coordination layer that prepends \texttt{[PEER-WARNING]} blocks
+    to a tool's response when the tool's \texttt{(name, arguments)}
+    matches a peer event from a prior failed trial of the same task.
+    The agent's tool surface and prompt are unchanged.  On
+    $\tau^2$-bench retail at $n{=}30$ tasks (180 trials,
+    Haiku~4.5), intercept reaches pass$^2$ of TODO vs.\ TODO for
+    no-coordination and TODO for agent-driven pull (paired
+    Wilcoxon, Cliff's $\delta = $TODO).  Intercept also uses
+    TODO\% fewer input tokens than no-coordination because the
+    framework consults the store at zero LLM cost.  This is the
+    first head-to-head architectural comparison of pull-vs-intercept
+    for multi-agent coordination on a public benchmark.
+
+% --- Additional contribution to add as C5 ---
+
+\item \textbf{(C5) Anthropic-native $\tau^2$-bench harness.}
+    Tau2-bench's bundled litellm-based pipeline produces malformed
+    Anthropic-API message histories on multi-turn dual-control
+    domains, yielding $\geq30\%$ infra-error rates with stock
+    \texttt{LLMAgent} on Anthropic models in our measurements.
+    We release a $\sim$300-line drop-in replacement that re-uses
+    tau2's domain DB, tools, task definitions, and DB-hash reward
+    function but constructs its own conversation state directly
+    against the Anthropic Messages API.  Zero infra errors at
+    180 trials.  We expect this to be useful infrastructure for
+    other groups evaluating Anthropic deployments on $\tau$-bench
+    family benchmarks.

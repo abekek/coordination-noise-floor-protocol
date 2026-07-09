@@ -1,0 +1,37 @@
+% Trial-0 vs trial-1 randomization-check bar chart. Pure TikZ.
+\begin{tikzpicture}[
+    font=\small,
+    barscale/.style={yscale=3.2, xscale=0.95},
+]
+\def\barwidth{0.18}
+\def\px#1#2#3{
+    \draw[fill=#3] (#1-\barwidth/2, 0) rectangle (#1+\barwidth/2, #2);
+    \node[font=\scriptsize, above=-1pt] at (#1, #2) {\pgfmathprintnumber[fixed,fixed zerofill,precision=2]{#2}};
+}
+\begin{scope}[barscale]
+\foreach \y in {0, 0.2, 0.4, 0.6} {
+    \draw[gray!40, very thin] (0, \y) -- (3.6, \y);
+    \node[left, font=\scriptsize, gray!60!black] at (0, \y) {\pgfmathprintnumber[fixed,precision=1]{\y}};
+}
+\draw[->, thin] (0,0) -- (0, 0.72);
+\draw[->, thin] (0,0) -- (3.6, 0);
+
+% Trial 0 (teal), Trial 1 (purple)
+\px{0.8-0.12}{0.54}{teal!60!white}
+\px{0.8+0.12}{0.54}{purple!60!white}
+\px{1.8-0.12}{0.62}{teal!60!white}
+\px{1.8+0.12}{0.54}{purple!60!white}
+\px{2.8-0.12}{0.44}{teal!60!white}
+\px{2.8+0.12}{0.54}{purple!60!white}
+
+\node[below, font=\small] at (0.8, 0) {\texttt{no\_coord}};
+\node[below, font=\small] at (1.8, 0) {\texttt{pull}};
+\node[below, font=\small] at (2.8, 0) {\texttt{intercept}};
+\node[rotate=90, font=\small] at (-0.55, 0.36) {Success rate};
+\end{scope}
+
+\node[draw=teal!50!black, fill=teal!60!white, minimum size=8pt, inner sep=0] (l1) at (0.6, 3.5) {};
+\node[right=2pt of l1, font=\small] {trial 0 (empty store)};
+\node[draw=purple!50!black, fill=purple!60!white, minimum size=8pt, inner sep=0] (l2) at (2.6, 3.5) {};
+\node[right=2pt of l2, font=\small] {trial 1 (after store fill)};
+\end{tikzpicture}

@@ -1,0 +1,26 @@
+% Phase 3 — MiniTrip Toy Benchmark Ablation (claude-haiku-4-5, 30 queries × 3 seeds = 90 trials/condition)
+% Generated automatically from results/lean_toy_20260601_0028/
+\begin{table}[t]
+\centering
+\caption{Toy-benchmark ablation results. SR = task success rate (\%), LLM = avg LLM calls per trial,
+Tok\textsubscript{in} = avg input tokens, Redund = redundant-call rate (\%).}
+\label{tab:toy-ablation}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Condition} & \textbf{SR (\%)} & \textbf{LLM calls} & \textbf{Tok\textsubscript{in}} & \textbf{Redund (\%)} \\
+\midrule
+\multicolumn{5}{l}{\textit{Baselines}} \\
+B1: Full context          & 33.3 & 8.1  & 11{,}059 & 2.8 \\
+B2: Summarization         & 14.4 & 9.9  & 14{,}267 & 0.3 \\
+B3: CA-MCP style          & 32.2 & 8.2  & 11{,}672 & 1.4 \\
+\midrule
+\multicolumn{5}{l}{\textit{ET-MCP ablations}} \\
+ET-MCP (default)          & 22.2 & 9.6  & 13{,}736 & 0.0 \\
+\quad w/o query           & 22.2 & 9.7  & 13{,}804 & 2.8 \\
+\quad random query        & 22.2 & 9.6  & 13{,}826 & 0.0 \\
+\quad push-negative       & 22.2 & 9.8  & 13{,}958 & 1.5 \\
+\quad failure-strict      & 22.2 & 9.7  & 13{,}918 & 0.0 \\
+\quad write-everything    & 22.2 & 9.7  & 13{,}918 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}

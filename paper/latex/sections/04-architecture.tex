@@ -1,0 +1,100 @@
+\section{ET-MCP Architecture}
+\label{sec:architecture}
+
+ET-MCP is the substrate that makes the measurement protocol of
+\S\ref{sec:evaluation} possible; it is not the contribution of
+this paper. This section covers only what the measurement story
+needs: the minimal tool surface, the failure-only writer policy,
+and the pull-vs-intercept reader-side distinction that
+\S\ref{sec:evaluation} compares.
+
+\subsection{Tool surface and lifecycle}
+\label{sec:arch:tools}
+\label{sec:arch:lifecycle-write-query}
+
+The substrate is structured around one trace namespace per
+\texttt{task\_id}, served over the stateless MCP 2026-07-28
+transport~\cite{mcpspec2026}. Agents see three operations:
+\texttt{trace.write} (append a typed event),
+\texttt{trace.query} (TF-IDF ranking over the typed payload,
+returning top-$k$ peer events with one-line summaries), and
+\texttt{trace.cas} (compare-and-swap for the rare double-commit
+race). The task lifecycle (\texttt{init}, \texttt{complete}, TTL
+sweep) is owned by the orchestrator through a separate channel
+that participating agents cannot reach, so no agent can tear down
+a peer's namespace. The TF-IDF ranker is a single replaceable
+component.
+
+\subsection{Writer policy}
+\label{sec:arch:taxonomy}
+
+Events carry an envelope (\texttt{event\_id}, \texttt{task\_id},
+\texttt{event\_type}, \texttt{agent\_id}, \texttt{timestamp},
+\texttt{version}, \texttt{payload}). Five typed event categories
+cover the negative-outcome cases mapped to the MAST failure
+taxonomy~\cite{mast2025}: failed paths, constraint violations,
+abandoned approaches, irreversible intermediate decisions, and
+tool errors. The default \texttt{failure\_only} client-side
+selection policy writes only on these negative outcomes. The
+$\tau^2$ retail evaluation specializes this to a single
+\textsc{failed\_trial\_action} type keyed on the trial's terminal
+reward.
+
+\subsection{Two reader-side architectures: pull and intercept}
+\label{sec:arch:pull-vs-intercept}
+
+\begin{figure*}[t]
+\centering
+\input{figures/pull-vs-intercept.tikz}
+\caption{Reader-side architecture contrast. The two designs share
+the event store, writer policy, and MCP transport; they differ
+only in who reads and when the payload is presented.
+\textbf{Pull} (left): P1 store $\to$ agent (curated summary at
+trial start); P2 agent $\to$ tool (call); P3 tool $\to$ agent
+(raw response).
+\textbf{Intercept} (right): I1 agent $\to$ framework (call); I2
+framework $\to$ tool (forward); I3 tool $\to$ framework (raw);
+I4 framework $\to$ store (consult); I5 framework $\to$ agent
+(response, with \texttt{[PEER-WARNING]} prepended on argument
+match).  Pull presents the curated payload once; intercept
+injects raw warnings per matching call.}
+\label{fig:pull-vs-intercept}
+\Description{Side-by-side architecture diagram. Left panel shows
+the pull architecture: the ET-MCP store sends a curated summary to
+the agent at trial start, then the agent calls the tool and the
+tool returns a raw response. Right panel shows the intercept
+architecture: the agent calls the tool, the call passes through
+the framework which consults the ET-MCP store, the tool returns
+its raw response to the framework, and the framework forwards a
+modified response with a [PEER-WARNING] block prepended back to
+the agent.}
+\end{figure*}
+
+Figure~\ref{fig:pull-vs-intercept} contrasts the two designs.
+\textbf{Pull} places the agent as the \emph{active reader}: it
+calls \texttt{trace.query} when it estimates peer events might
+inform the next decision, paying decision overhead, round-trip
+latency, and an enlarged tool surface for that control.
+
+\textbf{Intercept} relocates the reader into the framework. The
+orchestrator intercepts every tool call, and if the call's
+(name, arguments) appears in the task-scoped store as a peer
+\textsc{failed\_path} or \textsc{failed\_trial\_action} event,
+it prepends a \texttt{[PEER-WARNING]} block to the response.
+Intercept removes the agent-side decision, the LLM round-trip,
+and any agent code changes; the tool surface and prompt are
+unchanged. The hook surface intercept rides on is already a
+production primitive in Strands~\cite{strandshooks2025},
+AgentCore Policy~\cite{agentcorepolicy2025}, LangChain
+middleware~\cite{langchainmiddleware2026}, and Microsoft Agent
+Framework~\cite{msagentframework2026}, so intercept is an
+additive extension to existing runtimes, not a new framework.
+
+Both architectures share the same event taxonomy, failure-only
+writer policy, task-scoped lifecycle, and MCP transport, and are
+configuration-equivalent at trial 0: pull's augmenter is a no-op
+when the store is empty, and the intercept hook is pass-through
+on no argument match. The full audit of this equivalence is in
+\S\ref{sec:eval:request-equivalence}. The next
+section instantiates both in the reference implementation that
+produces the measurements of \S\ref{sec:evaluation}.

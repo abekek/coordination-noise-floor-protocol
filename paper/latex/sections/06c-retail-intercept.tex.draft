@@ -1,0 +1,196 @@
+% v2-final τ²-bench retail subsection. n=100 numbers populated.
+% Headline: pull dominates intercept under matched payload.
+
+\subsubsection{Reader-side architecture head-to-head: pull vs.\
+intercept on $\tau^2$-bench retail}
+\label{sec:eval:results:retail-intercept}
+
+\paragraph{Question.}
+\S\ref{sec:eval:results:travelplanner-isolation} established that the
+pull \emph{channel} is load-bearing within ET-MCP under matched
+payload, on TravelPlanner.  Two open questions remain.  \emph{(i)}~Does
+the finding generalize beyond TravelPlanner---in particular, to a
+public, peer-reviewed benchmark whose scorer is state-validated rather
+than retrieval-redundancy-based?  \emph{(ii)}~Holding the underlying
+event store, writer policy, and payload constant, does the
+\emph{reader-side architecture}---agent-as-reader vs.\ framework-as-
+reader---move the headline metric?  We answer both with a controlled
+head-to-head on $\tau^2$-bench retail.
+
+\paragraph{Benchmark.}
+$\tau^2$-bench~\cite{tau2bench2025} (Sierra Research) is a
+state-validated conversational agent benchmark: each trial passes
+only if its final database state matches the state produced by
+replaying the task's reference action sequence.  Redundant or
+wrong-state write calls register as scoring failures directly.  The
+official headline metric is pass$^k$: the fraction of tasks where
+\emph{all} $k$ independent trials succeed---a reliability metric that
+rewards cross-trial coordination intrinsically when peer state can be
+shared.  We evaluate the retail domain at pass$^2$ as the workshop
+audience's primary reliability surface, and report pass$^1$ for
+single-trial comparison.
+
+\paragraph{Harness.}
+$\tau^2$-bench's bundled litellm-based pipeline produces malformed
+Anthropic-API message histories on multi-turn retail tasks, yielding
+$\geq 30\%$ silent infra-error rates with the stock
+\texttt{LLMAgent} on Anthropic Haiku in our pilot measurements (a
+failure class consistent with multiple open BerriAI/litellm
+issues~\cite{litellmissue12404,litellmissue15322}).  We evaluate
+through a $\sim$700-line Anthropic-native harness that re-uses
+$\tau^2$'s domain database, tools, task definitions, and DB-hash
+reward function but constructs its conversation state directly
+against the Anthropic Messages API.  Zero infra errors at 600
+trials.  The harness is released alongside the paper.
+
+\paragraph{Protocols.}
+Three protocols share an identical writer side: at the close of any
+trial that ended with reward $<\!1$, the final $k=3$ tool calls of
+that trial are recorded as \textsc{failed\_trial\_action} events in
+the task-scoped store.  ($k{=}3$ is a causal-attribution heuristic
+discussed in \S\ref{sec:discussion:writer}; an all-actions writer
+overattributes causality and degrades both pull and intercept,
+matching our pilot-study finding.)  The protocols differ only in the
+reader interface:
+
+\begin{description}
+\item[\texttt{no\_coord}.] No cross-trial state.  Each trial is
+  independent; the trace store is unused.  Baseline.
+\item[\texttt{pull}.] Agent-as-reader.  At trial start, the store is
+  summarized into a \texttt{<peer\_warnings>} block prepended to the
+  agent's system prompt.  No per-turn overhead beyond a longer
+  system prompt; the agent decides how to weigh the warnings against
+  the current state.
+\item[\texttt{intercept}.] Framework-as-reader.  No system-prompt
+  augmentation; the agent's tool surface is unchanged.  When the
+  agent calls a tool whose (name, arguments) appears in the store as
+  a \textsc{failed\_trial\_action} from a peer trial, the
+  orchestrator prepends a structured \texttt{[PEER-WARNING]} block
+  to the tool's response before returning it to the agent.
+\end{description}
+
+Pull and intercept share the writer policy, the event store, and the
+MCP-conformant transport (\S\ref{sec:architecture}).  They differ
+only in the reader interface.  This is the matched-payload
+controlled comparison: any pass$^k$ difference between pull and
+intercept must be attributed to the reader-side architecture, not
+to which events are available.
+
+\paragraph{Setup.}
+We sampled 100 tasks from $\tau^2$-bench retail (seed 42),
+$\times$ 3 protocols $\times$ 2 trials $=$ 600 trials.  Both the
+assistant and the simulated user are Claude Haiku 4.5
+(\texttt{claude-haiku-4-5}), temperature 0, with a 20 assistant-turn
+budget per trial.  The task-scoped store is shared across the 2
+trials of a task within a protocol cell and reset between cells.
+
+\paragraph{Headline result.}
+Table~\ref{tab:tau2retail:headline} reports cell-level metrics;
+Table~\ref{tab:tau2retail:pairwise} reports paired comparisons
+against \texttt{no\_coord} and the intercept-vs-pull contrast.
+
+\begin{table}[t]
+\centering
+\caption{$\tau^2$-bench retail headline results
+($n=100$ tasks $\times$ 2 trials per protocol, 200 trials per cell,
+Claude Haiku~4.5).  Zero infra errors across 600 trials.}
+\label{tab:tau2retail:headline}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Protocol & pass$^1$ & pass$^2$ & Succ.\ rate & Tool calls & Tok\textsubscript{in} \\
+\midrule
+\texttt{no\_coord}  & 0.540 & 0.380 & 0.540 & 7.74 & 77{,}235 \\
+\textbf{\texttt{pull}}       & \textbf{0.620} & \textbf{0.440} & \textbf{0.580} & 7.51 & 77{,}066 \\
+\texttt{intercept} & 0.440 & 0.330 & 0.490 & 7.67 & 75{,}680 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Paired comparisons under matched payload.  Wins/losses/ties
+are over 100 paired tasks; sign-test $p$-values are uncorrected
+two-sided.  Holm-corrected across the four protocol-vs-no\_coord
+tests ($m=4$); the intercept-vs-pull contrast is reported separately
+as the architectural head-to-head.  $\ast$ marks uncorrected $p<0.05$.}
+\label{tab:tau2retail:pairwise}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Comparison & Wins/Losses/Ties & Cliff's $\delta$ & sign-test $p$ \\
+\midrule
+\multicolumn{4}{l}{\emph{pass$^1$:}} \\
+\quad pull vs.\ no\_coord       & 18 / 10 / 72 & $+0.08$ & $0.185$ \\
+\quad intercept vs.\ no\_coord  & 11 / 21 / 68 & $-0.10$ & $0.110$ \\
+\quad \textbf{intercept vs.\ pull (head-to-head)} & \textbf{9 / 27 / 64} & $\mathbf{-0.18}$ & $\mathbf{0.004}^{\ast}$ \\
+\multicolumn{4}{l}{\emph{pass$^2$:}} \\
+\quad pull vs.\ no\_coord       & 18 / 12 / 70 & $+0.06$ & $0.362$ \\
+\quad intercept vs.\ no\_coord  & 9 / 14 / 77  & $-0.05$ & $0.405$ \\
+\quad \textbf{intercept vs.\ pull (head-to-head)} & \textbf{7 / 18 / 75} & $\mathbf{-0.11}$ & $\mathbf{0.043}^{\ast}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Reader architecture is load-bearing under matched payload.}
+The intercept-vs-pull comparison is the architectural head-to-head:
+identical writer, identical event store, identical payload, the only
+difference is who is the active reader.  Pull dominates intercept by
+$+0.18$ Cliff's $\delta$ on pass$^1$ (sign-test $p=0.004$
+uncorrected; 27 task-level losses for intercept against 9 wins) and
+by $+0.11$ on pass$^2$ ($p=0.043$).  Cell-level effects are
+substantial: pull's pass$^1$ is $+18$\,pp absolute over intercept's
+($0.62$ vs.\ $0.44$).  Under Holm-Bonferroni correction across the
+four vs.-no\_coord tests, no individual contrast reaches $p<0.05$
+(the closest is intercept-vs-no\_coord on pass$^1$, $p_{\textrm{Holm}}{=}0.44$),
+reflecting the high tie rate of binary pass$^k$ comparisons; the
+matched-payload head-to-head sidesteps this because pull and
+intercept differ on far more tasks than either differs from
+no\_coord.  We treat the head-to-head contrast as the architectural
+claim and the vs.-no\_coord contrasts as descriptive cell-level
+context.
+
+\paragraph{Pull generalizes; intercept does not improve over no
+coordination.}
+Pull's pass$^k$ lift over \texttt{no\_coord} ($+8$\,pp pass$^1$,
+$+6$\,pp pass$^2$) is directional but not significant at $n{=}100$;
+the picture remains consistent with the
+\S\ref{sec:eval:results:travelplanner-isolation} within-system
+finding that the pull channel is the load-bearing component.
+Intercept, in contrast, underperforms \texttt{no\_coord} on
+\emph{both} metrics ($-10$\,pp pass$^1$, $-5$\,pp pass$^2$;
+non-significant directionally), so the framework-side reader is not
+recovering the architectural benefit observed within-system.
+
+\paragraph{Mechanistic interpretation.}
+The intercept store accumulates a mean of $2.77$
+\textsc{failed\_trial\_action} events per trial (max $8$).  Each
+matching tool call in a subsequent trial fires a separate
+\texttt{[PEER-WARNING]} block on the tool response.  The agent
+receives warnings at the moment of the relevant call but cannot
+weigh them globally against the current state---some matched tool
+calls may have legitimately succeeded in past trials and failed for
+reasons unrelated to the tool arguments (e.g., upstream state
+mutation).  Pull's single trial-start summary lets the agent
+exercise judgment: read once, contextualize, and choose when to
+defer to the warning.  At the scale we test, the agent's
+discrimination dominates the framework's coverage.  This is the
+inverse of the production-stack intuition---that framework
+mediation improves on agent self-management---and suggests
+coordination semantics are not symmetric with the security/blocking
+semantics that motivate production hook surfaces.
+
+\paragraph{Cost.}
+All three cells use comparable input-token budgets ($75.7$K--$77.2$K
+mean, intercept lowest by $2$\%).  The lift from pull is therefore a
+strict architectural win, not a cost-quality tradeoff.
+
+\paragraph{Limitations.}
+The reader-side architecture finding holds at $n{=}100$ tasks on a
+single retail domain at a single model checkpoint
+(Haiku~4.5, $T{=}0$); cross-domain generalization (airline,
+telecom---both have weaker coordination signals in pilot studies)
+and cross-model generalization (Sonnet/Opus) are open.  The writer-side
+selection policy ($k{=}3$) is fixed and hand-tuned.  Pass$^k$ at
+$k>2$ would let us measure whether the architectural gap widens
+with retry budget; we leave this to future work.

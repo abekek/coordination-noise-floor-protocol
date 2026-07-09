@@ -1,0 +1,82 @@
+{
+  "benchmark": "travelplanner",
+  "model": "claude-haiku-4-5",
+  "sources": [
+    "lean_travelplanner_20260601_1622",
+    "lean_travelplanner_20260601_1903"
+  ],
+  "per_condition": {
+    "B1_full_context": {
+      "n": 90,
+      "completion_rate": 0.011111111111111112,
+      "avg_llm_calls": 11.38888888888889,
+      "avg_input_tokens": 27520.844444444443,
+      "avg_redundant_rate": 0.09782301701329123,
+      "status": "complete"
+    },
+    "B2_summarization": {
+      "n": 90,
+      "completion_rate": 0.011111111111111112,
+      "avg_llm_calls": 9.177777777777777,
+      "avg_input_tokens": 24120.977777777778,
+      "avg_redundant_rate": 0.0684227798255536,
+      "status": "complete"
+    },
+    "B3_ca_mcp_style": {
+      "n": 90,
+      "completion_rate": 0.022222222222222223,
+      "avg_llm_calls": 10.622222222222222,
+      "avg_input_tokens": 26559.266666666666,
+      "avg_redundant_rate": 0.07912781624813897,
+      "status": "complete"
+    },
+    "ET_MCP_default": {
+      "n": 90,
+      "completion_rate": 0.011111111111111112,
+      "avg_llm_calls": 11.511111111111111,
+      "avg_input_tokens": 32502.12222222222,
+      "avg_redundant_rate": 0.03862208768909163,
+      "status": "complete"
+    },
+    "ET_MCP_no_query": {
+      "n": 90,
+      "completion_rate": 0.011111111111111112,
+      "avg_llm_calls": 12.133333333333333,
+      "avg_input_tokens": 29701.366666666665,
+      "avg_redundant_rate": 0.12458701342510849,
+      "status": "complete"
+    },
+    "ET_MCP_random_query": {
+      "n": 90,
+      "completion_rate": 0,
+      "avg_llm_calls": 11.944444444444445,
+      "avg_input_tokens": 32142.38888888889,
+      "avg_redundant_rate": 0.041561444738719776,
+      "status": "complete"
+    },
+    "ET_MCP_push_negative": {
+      "n": 90,
+      "completion_rate": 0,
+      "avg_llm_calls": 11.833333333333334,
+      "avg_input_tokens": 31795.655555555557,
+      "avg_redundant_rate": 0.05194817702462139,
+      "status": "complete"
+    },
+    "ET_MCP_failure_strict": {
+      "n": 90,
+      "completion_rate": 0,
+      "avg_llm_calls": 12.233333333333333,
+      "avg_input_tokens": 30083.566666666666,
+      "avg_redundant_rate": 0.1345583912929364,
+      "status": "complete"
+    },
+    "ET_MCP_write_everything": {
+      "n": 90,
+      "completion_rate": 0.022222222222222223,
+      "avg_llm_calls": 11.88888888888889,
+      "avg_input_tokens": 31752.766666666666,
+      "avg_redundant_rate": 0.03569997233073736,
+      "status": "complete"
+    }
+  }
+}

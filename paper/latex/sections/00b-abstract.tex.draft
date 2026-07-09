@@ -1,0 +1,43 @@
+% v2 abstract draft. Drops in once we have the n=30 numbers.
+% Leads with the architectural pivot (intercept) rather than v1's
+% within-system ablation; v1 evidence becomes corroborating.
+
+Multi-agent LLM systems coordinate through push: the writer of state
+decides what the reader receives, and the reader cannot ask for
+anything else.  We introduce \textbf{ET-MCP}, a task-scoped trace
+store of typed events biased toward negative knowledge (failed
+paths, constraint violations) conformant with the MCP 2026-07-28
+specification.  ET-MCP supports two reader-side architectures: a
+\emph{pull} interface where the agent queries the store via an
+explicit MCP tool, and an \emph{intercept} layer where the
+orchestrator transparently prepends peer warnings to tool responses
+without modifying the agent's tool surface or prompt.  The
+architectural contribution is the intercept layer: it relocates the
+coordination logic from the agent to the framework, eliminating
+both the agent-side decision overhead of "remember to query" and
+the round-trip latency of an explicit query call.
+
+We report evidence at two levels.  \emph{Within-system}: a
+nine-condition ablation factorial on TravelPlanner (810 trials,
+Haiku~4.5) isolates the pull channel architecturally—delivering the
+same negative-knowledge payload via structured push recovers part of
+the gain but underperforms pull (5.2\% vs.\ 3.9\% redundancy at
+$n{=}90$ per cell).  \emph{Cross-protocol on a public benchmark}:
+on $n{=}30$ tasks from $\tau^2$-bench retail~\cite{tau2bench2025}
+(180 trials, Haiku~4.5, paired by task), the intercept architecture
+outperforms both no-coordination and pull on pass$^k$:
+intercept reaches \textbf{pass$^2$=TODO} vs.\ TODO for no\_coord and
+TODO for pull, and uses TODO\% fewer input tokens than no\_coord.
+Pull is statistically indistinguishable from no\_coord on the same
+benchmark---putting peer knowledge in a static system-prompt block
+does not help at this scale, but injecting it at the moment of the
+relevant tool call does.  Silo-Bench at $N{=}5$ corroborates the
+mechanism on a separate public benchmark via the Stale
+Re-Submission Rounds metric (Holm-significant on the multi-hop
+subset, medium-to-large effect).  A $N{=}2$ MiniTrip negative
+control inverts on completion as predicted, while the redundancy
+mechanism still fires.  We position the architectural pivot as the
+v2 contribution: \emph{transparent peer-warning injection at the
+framework layer} both improves task reliability and reduces cost
+relative to agent-driven pull, and is deployable without modifying
+agent code.

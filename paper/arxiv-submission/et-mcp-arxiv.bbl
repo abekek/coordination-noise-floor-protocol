@@ -1,0 +1,576 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{36}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[{Amazon Web Services}(2025a)]%
+        {agentcorepolicy2025}
+\bibfield{author}{\bibinfo{person}{{Amazon Web Services}}.}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{Amazon Bedrock {AgentCore Policy}: Real-Time
+  Tool-Call Boundary Enforcement}.
+\newblock \bibinfo{howpublished}{Product announcement}.
+\newblock
+\urldef\tempurl%
+\url{https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-bedrock-agentcore-policy-evaluations-preview/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{Amazon Web Services}(2025b)]%
+        {strandshooks2025}
+\bibfield{author}{\bibinfo{person}{{Amazon Web Services}}.}
+  \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{Strands {Agents SDK}: Hooks API for Agent Lifecycle
+  Interception}.
+\newblock \bibinfo{howpublished}{Open-source SDK documentation}.
+\newblock
+\urldef\tempurl%
+\url{https://strandsagents.com/docs/user-guide/concepts/agents/hooks/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{Anthropic Engineering}(2026)]%
+        {anthropicnoise2026}
+\bibfield{author}{\bibinfo{person}{{Anthropic Engineering}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Quantifying Infrastructure Noise in Agentic Coding
+  Evals}.
+\newblock \bibinfo{howpublished}{Engineering blog post}.
+\newblock
+\urldef\tempurl%
+\url{https://www.anthropic.com/engineering/infrastructure-noise}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Barres et~al\mbox{.}(2025)]%
+        {tau2bench2025}
+\bibfield{author}{\bibinfo{person}{Victor Barres}, \bibinfo{person}{Honghua
+  Dong}, \bibinfo{person}{Soham Ray}, \bibinfo{person}{Xujie Jia}, {and}
+  \bibinfo{person}{Shunyu Yao}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{{$\tau^2$-bench}: Evaluating Conversational Agents in
+  a Dual-Control Environment}.
+\newblock
+\showeprint[arxiv]{2506.07982}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2506.07982}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Bedi et~al\mbox{.}(2025)]%
+        {bedi2025paradox}
+\bibfield{author}{\bibinfo{person}{Suhana Bedi}, \bibinfo{person}{Y. Mlauzi},
+  \bibinfo{person}{J. Shin}, \bibinfo{person}{Sanmi Koyejo}, {and}
+  \bibinfo{person}{Nigam~H. Shah}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{The Optimization Paradox in Clinical {AI}
+  Multi-Agent Systems}. In \bibinfo{booktitle}{\emph{KDD 2025 Workshop on
+  Agentic and Generative {AI} Evaluation}}.
+\newblock
+\showeprint[arxiv]{2506.06574}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2506.06574}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{BerriAI litellm community}(2025a)]%
+        {litellmissue15322}
+\bibfield{author}{\bibinfo{person}{{BerriAI litellm community}}.}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{Anthropic message history validation error after
+  consecutive tool calls}.
+\newblock \bibinfo{howpublished}{GitHub issue}.
+\newblock
+\urldef\tempurl%
+\url{https://github.com/BerriAI/litellm/issues/15322}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{BerriAI litellm community}(2025b)]%
+        {litellmissue12404}
+\bibfield{author}{\bibinfo{person}{{BerriAI litellm community}}.}
+  \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{Anthropic provider produces malformed
+  \texttt{tool\_use}/\texttt{tool\_result} sequences on multi-turn tool calls}.
+\newblock \bibinfo{howpublished}{GitHub issue}.
+\newblock
+\urldef\tempurl%
+\url{https://github.com/BerriAI/litellm/issues/12404}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Bjarnason et~al\mbox{.}(2026)]%
+        {randomnessagentic2026}
+\bibfield{author}{\bibinfo{person}{Bjarni~Haukur Bjarnason},
+  \bibinfo{person}{Andr\'e Silva}, {and} \bibinfo{person}{Martin Monperrus}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{On Randomness in Agentic Evals}.
+\newblock
+\showeprint[arxiv]{2602.07150}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2602.07150}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Cemri et~al\mbox{.}(2025)]%
+        {mast2025}
+\bibfield{author}{\bibinfo{person}{Mert Cemri} {et~al\mbox{.}}}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{MAST}: A Taxonomy of Multi-Agent System Failures
+  from 1{,}600+ Production Traces}. In \bibinfo{booktitle}{\emph{Advances in
+  Neural Information Processing Systems (NeurIPS)}}.
+\newblock
+
+
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {agentverse2023}
+\bibfield{author}{\bibinfo{person}{Weize Chen}, \bibinfo{person}{Yusheng Su},
+  \bibinfo{person}{Jingwei Zuo}, \bibinfo{person}{Cheng Yang},
+  \bibinfo{person}{Chenfei Yuan}, \bibinfo{person}{Chen-Ming Chan},
+  \bibinfo{person}{Heyang Yu}, \bibinfo{person}{Yaxi Lu},
+  \bibinfo{person}{Yi-Hsin Hung}, \bibinfo{person}{Chen Qian},
+  \bibinfo{person}{Yujia Qin}, \bibinfo{person}{Xin Cong},
+  \bibinfo{person}{Ruobing Xie}, \bibinfo{person}{Zhiyuan Liu},
+  \bibinfo{person}{Maosong Sun}, {and} \bibinfo{person}{Jie Zhou}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AgentVerse}: Facilitating Multi-Agent
+  Collaboration and Exploring Emergent Behaviors}. In
+  \bibinfo{booktitle}{\emph{ICLR}}.
+\newblock
+\showeprint[arxiv]{2308.10848}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2308.10848}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Cuadron and {Amazon AGI}(2025)]%
+        {tau2bench_verified2025}
+\bibfield{author}{\bibinfo{person}{Alejandro Cuadron} {and}
+  \bibinfo{person}{{Amazon AGI}}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{{$\tau^2$-Bench-Verified}: Corrected Task Definitions
+  for Tool-Agent Evaluation}.
+\newblock \bibinfo{howpublished}{GitHub release}.
+\newblock
+\urldef\tempurl%
+\url{https://github.com/amazon-agi/tau2-bench-verified}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Fei et~al\mbox{.}(2026)]%
+        {codedelegator2026}
+\bibfield{author}{\bibinfo{person}{Tianxiang Fei}, \bibinfo{person}{Cheng
+  Chen}, \bibinfo{person}{Yue Pan}, \bibinfo{person}{Mao Zheng}, {and}
+  \bibinfo{person}{Mingyang Song}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{CodeDelegator}: Mitigating Context Pollution via
+  Role Separation in Code-as-Action Agents}.
+\newblock
+\showeprint[arxiv]{2601.14914}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2601.14914}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Gupta(2026)]%
+        {reliabilitybench2026}
+\bibfield{author}{\bibinfo{person}{Aayush Gupta}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{ReliabilityBench}: Evaluating {LLM} Agent
+  Reliability Under Production-Like Stress Conditions}.
+\newblock
+\showeprint[arxiv]{2601.06112}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2601.06112}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Hong et~al\mbox{.}(2024)]%
+        {metagpt2024}
+\bibfield{author}{\bibinfo{person}{Sirui Hong}, \bibinfo{person}{Mingchen
+  Zhuge}, \bibinfo{person}{Jonathan Chen}, \bibinfo{person}{Xiawu Zheng},
+  {et~al\mbox{.}}} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{MetaGPT}: Meta Programming for a Multi-Agent
+  Collaborative Framework}. In \bibinfo{booktitle}{\emph{ICLR}}.
+\newblock
+\showeprint[arxiv]{2308.00352}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2308.00352}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Jayanti and Han(2026)]%
+        {camcp2026}
+\bibfield{author}{\bibinfo{person}{Meenakshi~Amulya Jayanti} {and}
+  \bibinfo{person}{X.~Y. Han}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Enhancing Model Context Protocol ({MCP}) with
+  Context-Aware Server Collaboration}.
+\newblock
+\showeprint[arxiv]{2601.11595}~[cs.DC]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2601.11595}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{LangChain Team}(2026)]%
+        {langchainmiddleware2026}
+\bibfield{author}{\bibinfo{person}{{LangChain Team}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{LangChain} Middleware: \texttt{wrap\_tool\_call} and
+  \texttt{after\_model} Hooks}.
+\newblock \bibinfo{howpublished}{Framework documentation}.
+\newblock
+\urldef\tempurl%
+\url{https://docs.langchain.com/oss/python/langchain/middleware/custom}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Maiorano(2026)]%
+        {selftestquality2026}
+\bibfield{author}{\bibinfo{person}{Alexandre Crist\'ov\~ao Maiorano}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Automated Self-Testing as a Quality Gate:
+  Evidence-Driven Release Management for {LLM} Applications}.
+\newblock
+\showeprint[arxiv]{2603.15676}~[cs.SE]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2603.15676}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{Microsoft}(2026)]%
+        {msagentframework2026}
+\bibfield{author}{\bibinfo{person}{{Microsoft}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Microsoft Agent Framework: Function Middleware with
+  Shared State}.
+\newblock \bibinfo{howpublished}{Framework documentation}.
+\newblock
+\urldef\tempurl%
+\url{https://learn.microsoft.com/en-us/agent-framework/agents/middleware/shared-state}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{Microsoft Research}(2026)]%
+        {statebench2026}
+\bibfield{author}{\bibinfo{person}{{Microsoft Research}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{STATE-Bench}: A Memory-Agnostic Benchmark for
+  Stateful Agent Evaluation}.
+\newblock \bibinfo{howpublished}{Project page and blog post}.
+\newblock
+\urldef\tempurl%
+\url{https://opensource.microsoft.com/blog/2026/05/19/introducing-state-bench-a-benchmark-for-ai-agent-memory/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{Model Context Protocol Working Group}(2026)]%
+        {mcpspec2026}
+\bibfield{author}{\bibinfo{person}{{Model Context Protocol Working Group}}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Model Context Protocol Specification, Release
+  Candidate 2026-07-28}.
+\newblock
+\urldef\tempurl%
+\url{https://modelcontextprotocol.io/specification/2026-07-28/}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Mustahsan et~al\mbox{.}(2025)]%
+        {mustahsan2025stochasticity}
+\bibfield{author}{\bibinfo{person}{Zairah Mustahsan}, \bibinfo{person}{Abel
+  Lim}, \bibinfo{person}{Megna Anand}, \bibinfo{person}{Saahil Jain}, {and}
+  \bibinfo{person}{Bryan McCann}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Stochasticity in Agentic Evaluations: Quantifying
+  Inconsistency with Intraclass Correlation}.
+\newblock
+\showeprint[arxiv]{2512.06710}~[cs.LG]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2512.06710}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Nakamura et~al\mbox{.}(2025)]%
+        {terrarium2025}
+\bibfield{author}{\bibinfo{person}{Mason Nakamura}, \bibinfo{person}{Abhinav
+  Kumar}, \bibinfo{person}{Saaduddin Mahmud}, \bibinfo{person}{Sahar
+  Abdelnabi}, \bibinfo{person}{Shlomo Zilberstein}, {and}
+  \bibinfo{person}{Eugene Bagdasarian}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Terrarium: Revisiting the Blackboard for Multi-Agent
+  Safety, Privacy, and Security Studies}.
+\newblock
+\showeprint[arxiv]{2510.14312}~[cs.MA]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2510.14312}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Nigenda et~al\mbox{.}(2022)]%
+        {sagemaker_monitor2022}
+\bibfield{author}{\bibinfo{person}{David Nigenda}, \bibinfo{person}{Zohar
+  Karnin}, \bibinfo{person}{Muhammad~Bilal Zafar}, \bibinfo{person}{Raghu
+  Ramesha}, \bibinfo{person}{Alan Tan}, \bibinfo{person}{Michele Donini}, {and}
+  \bibinfo{person}{Krishnaram Kenthapadi}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{{Amazon SageMaker Model Monitor}: A System for
+  Real-Time Insights into Deployed Machine Learning Models}. In
+  \bibinfo{booktitle}{\emph{KDD}}.
+\newblock
+\urldef\tempurl%
+\url{https://www.amazon.science/publications/amazon-sagemaker-model-monitor-a-system-for-real-time-insights-into-deployed-machine-learning-models}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Ou et~al\mbox{.}(2025)]%
+        {ou2025coordination}
+\bibfield{author}{\bibinfo{person}{Long Ou}, \bibinfo{person}{Saujas Vaduguru},
+  {and} \bibinfo{person}{Daniel Fried}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Analyzing Information Sharing and Coordination in
+  Multi-Agent Planning}.
+\newblock
+\showeprint[arxiv]{2508.12981}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2508.12981}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Packer et~al\mbox{.}(2024)]%
+        {memgpt2024}
+\bibfield{author}{\bibinfo{person}{Charles Packer}, \bibinfo{person}{Sarah
+  Wooders}, \bibinfo{person}{Kevin Lin}, \bibinfo{person}{Vivian Fang},
+  \bibinfo{person}{Shishir~G.\ Patil}, \bibinfo{person}{Ion Stoica}, {and}
+  \bibinfo{person}{Joseph~E. Gonzalez}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{MemGPT}: Towards LLMs as Operating Systems}. In
+  \bibinfo{booktitle}{\emph{COLM}}.
+\newblock
+
+
+\bibitem[Qian et~al\mbox{.}(2026)]%
+        {mpac2026}
+\bibfield{author}{\bibinfo{person}{Kaiyang Qian}, \bibinfo{person}{Xinmin
+  Fang}, {and} \bibinfo{person}{Zhengxiong Li}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{MPAC}: A Multi-Principal Agent Coordination Protocol
+  for Interoperable Multi-Agent Collaboration}.
+\newblock
+\showeprint[arxiv]{2604.09744}~[cs.MA]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2604.09744}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Rabanser et~al\mbox{.}(2026)]%
+        {rabanser2026reliability}
+\bibfield{author}{\bibinfo{person}{Stephan Rabanser}, \bibinfo{person}{Sayash
+  Kapoor}, \bibinfo{person}{Peter Kirgis}, \bibinfo{person}{Kangheng Liu},
+  \bibinfo{person}{Saiteja Utpala}, {and} \bibinfo{person}{Arvind Narayanan}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Towards a Science of {AI} Agent Reliability}.
+\newblock
+\showeprint[arxiv]{2602.16666}~[cs.LG]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2602.16666}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Rath(2026)]%
+        {agentdrift2026}
+\bibfield{author}{\bibinfo{person}{Abhishek Rath}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Agent Drift: Quantifying Behavioral Degradation in
+  Multi-Agent {LLM} Systems Over Extended Interactions}.
+\newblock
+\showeprint[arxiv]{2601.04170}~[cs.MA]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2601.04170}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Shinn et~al\mbox{.}(2023)]%
+        {reflexion2023}
+\bibfield{author}{\bibinfo{person}{Noah Shinn}, \bibinfo{person}{Federico
+  Cassano}, \bibinfo{person}{Edward Berman}, \bibinfo{person}{Ashwin Gopinath},
+  \bibinfo{person}{Karthik Narasimhan}, {and} \bibinfo{person}{Shunyu Yao}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Reflexion: Language Agents with Verbal
+  Reinforcement Learning}. In \bibinfo{booktitle}{\emph{Advances in Neural
+  Information Processing Systems (NeurIPS)}}.
+\newblock
+\showeprint[arxiv]{2303.11366}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2303.11366}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Wang et~al\mbox{.}(2026)]%
+        {agentnoisebench2026}
+\bibfield{author}{\bibinfo{person}{Ruipeng Wang}, \bibinfo{person}{Yuxin Chen},
+  \bibinfo{person}{Yukai Wang}, \bibinfo{person}{Chang Wu},
+  \bibinfo{person}{Junfeng Fang}, \bibinfo{person}{Xiaodong Cai},
+  \bibinfo{person}{Qi Gu}, \bibinfo{person}{Hui Su}, \bibinfo{person}{An
+  Zhang}, \bibinfo{person}{Xiang Wang}, \bibinfo{person}{Xunliang Cai}, {and}
+  \bibinfo{person}{Tat-Seng Chua}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{AgentNoiseBench}: Benchmarking Robustness of
+  Tool-Using {LLM} Agents Under Noisy Condition}.
+\newblock
+\showeprint[arxiv]{2602.11348}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2602.11348}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Wang(2026)]%
+        {agenttrace2026}
+\bibfield{author}{\bibinfo{person}{Zhaohui~Geoffrey Wang}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{{AgentTrace}: Causal Graph Tracing for Root Cause
+  Analysis in Deployed Multi-Agent Systems}. In \bibinfo{booktitle}{\emph{ICLR
+  2026 Workshop on Agents in the Wild}}.
+\newblock
+\showeprint[arxiv]{2603.14688}~[cs.MA]
+
+
+\bibitem[Wu et~al\mbox{.}(2023)]%
+        {autogen2023}
+\bibfield{author}{\bibinfo{person}{Qingyun Wu}, \bibinfo{person}{Gagan Bansal},
+  \bibinfo{person}{Jieyu Zhang}, \bibinfo{person}{Yiran Wu},
+  \bibinfo{person}{Beibin Li}, \bibinfo{person}{Erkang Zhu},
+  \bibinfo{person}{Li Jiang}, \bibinfo{person}{Xiaoyun Zhang},
+  \bibinfo{person}{Jiale Liu}, \bibinfo{person}{Ahmed Awadallah},
+  \bibinfo{person}{Ryen~W.\ White}, \bibinfo{person}{Doug Burger}, {and}
+  \bibinfo{person}{Chi Wang}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{AutoGen}: Enabling Next-Gen {LLM} Applications via
+  Multi-Agent Conversation Framework}. In \bibinfo{booktitle}{\emph{ICLR 2024
+  LLM Agents Workshop}}.
+\newblock
+\showeprint[arxiv]{2308.08155}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2308.08155}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Yu et~al\mbox{.}(2026)]%
+        {multiagentmem2026}
+\bibfield{author}{\bibinfo{person}{Zhongming Yu}, \bibinfo{person}{Naicheng
+  Yu}, \bibinfo{person}{Hejia Zhang}, \bibinfo{person}{Wentao Ni},
+  \bibinfo{person}{Mingrui Yin}, \bibinfo{person}{Jiaying Yang},
+  \bibinfo{person}{Yujie Zhao}, {and} \bibinfo{person}{Jishen Zhao}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Multi-Agent Memory from a Computer Architecture
+  Perspective: Visions and Challenges Ahead}.
+\newblock
+\showeprint[arxiv]{2603.10062}~[cs.AR]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2603.10062}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Zhang et~al\mbox{.}(2025)]%
+        {gmemory2025}
+\bibfield{author}{\bibinfo{person}{Guibin Zhang}, \bibinfo{person}{Muxin Fu},
+  \bibinfo{person}{Guancheng Wan}, \bibinfo{person}{Miao Yu},
+  \bibinfo{person}{Kun Wang}, {and} \bibinfo{person}{Shuicheng Yan}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{{G-Memory}: Tracing Hierarchical Memory for
+  Multi-Agent Systems}.
+\newblock
+\showeprint[arxiv]{2506.07398}~[cs.MA]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2506.07398}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Zhang et~al\mbox{.}(2026)]%
+        {silobench2026}
+\bibfield{author}{\bibinfo{person}{Yuzhe Zhang}, \bibinfo{person}{Feiran Liu},
+  \bibinfo{person}{Yi Shan}, \bibinfo{person}{Xinyi Huang},
+  \bibinfo{person}{Xin Yang}, \bibinfo{person}{Yueqi Zhu},
+  \bibinfo{person}{Xuxin Cheng}, \bibinfo{person}{Cao Liu}, \bibinfo{person}{Ke
+  Zeng}, \bibinfo{person}{Terry~Jingchen Zhang}, {and} \bibinfo{person}{Wenyuan
+  Jiang}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{{Silo-Bench}: A Scalable Environment for Evaluating
+  Distributed Coordination in Multi-Agent {LLM} Systems}.
+\newblock
+\showeprint[arxiv]{2603.01045}~[cs.MA]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2603.01045}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Zhao et~al\mbox{.}(2024)]%
+        {expel2024}
+\bibfield{author}{\bibinfo{person}{Andrew Zhao}, \bibinfo{person}{Daniel
+  Huang}, \bibinfo{person}{Quentin Xu}, \bibinfo{person}{Matthieu Lin},
+  \bibinfo{person}{Yong-Jin Liu}, {and} \bibinfo{person}{Gao Huang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{ExpeL}: {LLM} Agents Are Experiential Learners}.
+  In \bibinfo{booktitle}{\emph{AAAI Conference on Artificial Intelligence}}.
+\newblock
+\showeprint[arxiv]{2308.10144}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2308.10144}
+\showURL{%
+\tempurl}
+
+
+\end{thebibliography}

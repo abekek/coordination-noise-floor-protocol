@@ -1,0 +1,91 @@
+% v2-final abstract. n=100 numbers landed and INVERTED the smoke
+% finding: pull (agent-as-reader) dominates intercept (framework-
+% as-reader) on Pass^k with sign-test p=0.004, Cliff's δ=+0.18.
+% Headline pivots to the pull-channel-generalization story.
+
+Modern multi-agent LLM runtimes expose framework-level tool-call
+interception as a production primitive: Strands' before/after
+tool-call hooks~\cite{strandshooks2025}, Amazon Bedrock AgentCore
+Policy~\cite{agentcorepolicy2025}, LangChain middleware's
+\texttt{wrap\_tool\_call}~\cite{langchainmiddleware2026}, and
+Microsoft Agent Framework's function
+middleware~\cite{msagentframework2026} all let the framework
+inspect, rewrite, or block a tool call's arguments and result
+without modifying the agent's tool schema or prompt.  These
+mechanisms are deployed today for blocking, validation, retries,
+and caching, and the industry trend points toward more framework
+mediation.  In parallel, recent work proposes MCP-conformant shared
+stores as a coordination substrate
+(CA-MCP~\cite{camcp2026}, Terrarium~\cite{terrarium2025},
+MPAC~\cite{mpac2026}) but routes coordination data through
+agent-visible store-query tools or server-to-server channels.
+Whether the \emph{architectural} choice of reader-side path---agent
+vs.\ framework---moves a benchmark needle, holding the underlying
+coordination store constant, has not been measured.
+
+We answer that question and report a counter-intuitive result.  We
+introduce \textbf{ET-MCP}, a task-scoped trace store of typed events
+biased toward negative knowledge (failed paths, constraint
+violations, failed-trial actions) conformant with the MCP 2026-07-28
+specification, and instantiate two reader-side architectures over
+the same store: a \emph{pull} interface where the agent receives a
+curated peer-warnings summary at trial start, and an
+\emph{intercept} layer where the orchestrator prepends a
+\texttt{[PEER-WARNING]} block to a tool's \emph{response} when the
+call's (name, arguments) match a peer event from a prior failed
+trial of the same task.  Pull and intercept share the event store,
+the writer policy, the event taxonomy, and the MCP transport; they
+differ only in who is the active reader.  This is, to our
+knowledge, the first controlled head-to-head comparison of
+reader-side coordination architectures under matched payload.
+
+We evaluate on $\tau^2$-bench retail~\cite{tau2bench2025} at
+$n{=}100$ tasks (600 trials, Claude Haiku~4.5, paired by task).
+\emph{Pull reaches pass$^1$=0.62 and pass$^2$=0.44; intercept reaches
+pass$^1$=0.44 and pass$^2$=0.33; no-coordination reaches
+pass$^1$=0.54 and pass$^2$=0.38.}  Pull beats no-coordination by
+$+8$\,pp on pass$^1$ and $+6$\,pp on pass$^2$ (Cliff's
+$\delta$=$+0.08$ and $+0.06$ respectively); intercept underperforms
+no-coordination by $-10$\,pp and $-5$\,pp.  Most importantly,
+\textbf{pull significantly dominates intercept under matched
+payload}: 27 task-level losses for intercept against 9 wins on
+pass$^1$ (paired sign test $p{=}0.004$, Cliff's $\delta$=$+0.18$),
+and 18-vs-7 on pass$^2$ ($p{=}0.043$).  At comparable input-token
+cost, the agent-side reader is the architecturally superior
+choice---counter to the production-stack trend toward framework-
+mediated coordination.  The mechanistic intuition: intercept fires
+on every matching tool call (mean 2.8 events per intercept trial,
+up to 8), blasting the agent with warnings on calls that may have
+legitimately succeeded in some past trial; pull lets the agent read
+one curated summary at trial start and exercise judgment.  Agent
+selectivity, not framework mediation, carries the architectural
+win.
+
+A within-system ablation factorial on TravelPlanner (810 trials,
+nine conditions) corroborates the mechanism: holding the
+negative-knowledge payload constant, the pull channel
+architecturally outperforms structured push baselines
+($3.9\%$ vs.\ $5.2\%$ redundancy, Wilcoxon-significant
+$p{<}0.05$), and the no-query bound and ranker-randomization
+ablation triangulate the same conclusion.  The within-system
+finding now generalizes to a Sierra-published peer-reviewed
+benchmark with cross-protocol significance.
+
+We additionally release a $\sim$700-line Anthropic-native
+$\tau^2$-bench harness that mitigates a documented bug class in
+$\tau^2$-bench's bundled litellm-based pipeline---malformed
+Anthropic-API message histories producing $\geq30\%$ silent infra
+errors on multi-turn dual-control retail tasks, consistent with
+multiple open issues in BerriAI's
+\texttt{litellm}~\cite{litellmissue12404,litellmissue15322}.
+Zero infra errors at 600 trials.  We position this as
+post-deployment trustworthiness infrastructure for groups
+evaluating Anthropic deployments on the $\tau$-bench family.
+
+The headline claim is methodological and architectural: in
+tool-using multi-agent systems, the reader-side path matters more
+than the coordination payload, and the agent-side reader path
+significantly outperforms the framework-side reader path on a
+public benchmark under matched payload---suggesting that selective
+agent-mediated reading, not blind framework-side injection, is the
+deployable coordination architecture.

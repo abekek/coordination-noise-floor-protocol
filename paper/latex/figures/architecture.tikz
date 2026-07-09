@@ -1,0 +1,65 @@
+% Architecture diagram for §4.1. Single-column figure (must fit \columnwidth).
+% Semantic encoding:
+%   shape: cylinder = data store; rounded-rect = agent; rect = control plane
+%   color: blue solid = MCP tool channel; orange dashed = lifecycle channel
+%          (agent-inaccessible)
+% Layout: agents stacked top-left; ET-MCP server (store + lifecycle mgr) right;
+%         orchestrator below agents with dashed lifecycle path to lifecycle mgr.
+% All channel labels live on the arrows themselves (no awkward braces).
+% Requires: \usetikzlibrary{positioning,arrows.meta,fit,backgrounds,
+%                           shapes.geometric,calc}
+\begin{tikzpicture}[
+  font=\small,
+  agent/.style={draw, rectangle, rounded corners=2pt,
+                minimum width=1.3cm, minimum height=0.6cm,
+                inner sep=2pt, fill=blue!10, align=center, font=\footnotesize},
+  host/.style={draw, rectangle, dashed, thick,
+               minimum width=1.6cm, minimum height=0.6cm,
+               inner sep=2pt, fill=orange!12, align=center, font=\footnotesize},
+  storenode/.style={draw, cylinder, shape border rotate=90, aspect=0.25,
+                    minimum width=2.2cm, minimum height=0.65cm,
+                    inner sep=2pt, fill=gray!8, align=center,
+                    font=\scriptsize},
+  lifenode/.style={draw, rectangle, minimum width=2.2cm, minimum height=0.5cm,
+                   inner sep=2pt, fill=orange!8, align=center,
+                   font=\scriptsize},
+  server/.style={draw=black!50, rounded corners, inner sep=7pt, fill=gray!4},
+  mcparrow/.style={{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]},
+                   thick, draw=blue!75!black, line width=0.7pt},
+  lifearrow/.style={-{Stealth[length=1.5mm]}, thick, dashed,
+                    draw=orange!75!black, line width=0.7pt},
+  arrowlabel/.style={font=\scriptsize\ttfamily, fill=white, inner sep=1.2pt},
+]
+% =========================================================
+% RIGHT: ET-MCP server cluster (trace store + lifecycle mgr)
+% =========================================================
+\node[storenode] (store)
+  {trace store \\ \scriptsize $\{\textit{task\_id} \to [\text{Event}]\}$};
+\node[lifenode, below=3mm of store] (lifecycle) {task lifecycle mgr};
+\begin{scope}[on background layer]
+  \node[server, fit=(store)(lifecycle),
+        label={[font=\scriptsize\bfseries]above:ET-MCP server}] (server) {};
+\end{scope}
+
+% =========================================================
+% LEFT: two agents (top) + orchestrator/task host (below)
+% =========================================================
+\node[agent, left=22mm of store]              (agentA) {Agent A};
+\node[agent, below=3mm of agentA]             (agentB) {Agent B};
+\node[host,  below=11mm of agentB]            (host)   {Orchestrator};
+
+% --- MCP tool channel: each agent <-> store, single shared label between arrows ---
+\draw[mcparrow] (agentA.east) -- (store.west |- agentA.east);
+\draw[mcparrow] (agentB.east) -- (store.west |- agentB.east);
+% Shared channel label, centred between the two arrows, with white backing
+% so it sits cleanly on top of the gap rather than next to a brace.
+\node[arrowlabel] at ($(agentA.east)!0.5!(agentB.east) + (10mm,0)$)
+  {trace.\{write, query, cas\}};
+
+% --- Lifecycle channel: orchestrator -> lifecycle mgr (dashed orange) ---
+% Orthogonal L route: right from host, then up into lifecycle.west
+\draw[lifearrow] (host.east) -| (lifecycle.west);
+\node[arrowlabel, font=\scriptsize\sffamily] at
+  ($(host.east) + (10mm,-2mm)$)
+  {POST /tasks/\{id\}/\{init,complete\}};
+\end{tikzpicture}

@@ -1,0 +1,22 @@
+% v2 draft — addition to §3.5 (Empirical Studies of Multi-Agent
+% Failure). Brief paragraph after the silobench2026 mention to
+% introduce τ²-bench as the public benchmark we evaluate on.
+
+$\tau$-bench~\cite{taubench2024} and its successor
+$\tau^2$-bench~\cite{tau2bench2025} (Sierra Research) provide
+state-validated conversational-agent benchmarks: each trial passes
+only if the agent's final database state matches the state produced
+by replaying the task's reference action sequence.  Redundant or
+wrong-state side-effecting calls therefore register as scoring
+failures intrinsically, rather than via a separately defined process
+metric.  $\tau^2$ reports pass$^k$, the fraction of tasks where all
+$k$ independent trials succeed---a reliability metric that rewards
+cross-trial coordination directly when peer state can be shared.
+We use $\tau^2$-bench retail as the head-to-head benchmark for the
+pull-vs-intercept architectural comparison
+(\S\ref{sec:eval:results:retail-intercept}).
+
+% TODO: also add a sentence to §3.1 (Push/Runtime) noting that
+% framework-side reader designs (LangGraph middleware, AutoGen pubsub)
+% are the natural antecedents for the intercept architecture even
+% though they have not been applied to negative-knowledge sharing.

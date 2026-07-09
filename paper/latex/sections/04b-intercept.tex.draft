@@ -1,0 +1,99 @@
+% v2 draft — insert into §4 (or as its own subsubsection in §4) to
+% describe the intercept architecture variant. Sits alongside the
+% existing description of pull-based ET-MCP.
+
+\subsection{Two reader-side architectures: pull and intercept}
+\label{sec:arch:pull-vs-intercept}
+
+The architecture described above places the agent in the role of the
+\emph{active reader}: the agent calls \texttt{trace.query} when it
+estimates that peer events might inform its next decision.  This
+design has the virtue of giving the agent control over what it asks
+for, but pays four costs.
+
+\begin{enumerate}[leftmargin=*]
+\item \emph{Decision overhead}: the agent must decide \emph{when} to
+  query.  Empirically (\S\ref{sec:eval:results:travelplanner-isolation})
+  the act of querying is more load-bearing than the ranker, so
+  failures-to-query cost more than failures-to-rank.  Agents that
+  forget to query miss the design's primary benefit.
+\item \emph{Round-trip latency}: each \texttt{trace.query} is an LLM
+  step (the agent emits the tool call) followed by a non-LLM step (the
+  store returns events) followed by another LLM step (the agent reads
+  the events and acts).
+\item \emph{Adoption friction}: deploying ET-MCP in an existing agent
+  framework requires modifying the agent's tool surface and prompting
+  it to consider the new tool.
+\item \emph{Near-circularity}: as observed in
+  \S\ref{sec:eval:results:travelplanner-isolation}, the redundancy
+  metric counts matches against in-store events, so the
+  no\_query~$\to$~12.5\% contrast partially reflects
+  ``agents who cannot read the store cannot avoid what is in the
+  store.''
+\end{enumerate}
+
+The natural alternative is to relocate the reader from the agent to
+the framework.  We define \textbf{intercept} as a passive reader-side
+architecture: the orchestrator (or, in framework deployments, a
+middleware layer) intercepts every tool call the agent emits and,
+\emph{if} the call's \texttt{(name, arguments)} appears in the
+task-scoped trace store as a peer event of type
+\textsc{failed\_path} or \textsc{failed\_trial\_action}, prepends a
+structured \texttt{[PEER-WARNING]} block to the tool's response before
+returning it to the agent.
+
+Concretely, intercept differs from pull on each of the four axes
+above:
+
+\begin{enumerate}[leftmargin=*]
+\item \emph{No decision overhead}: the agent does not decide when to
+  consult peer events; the orchestrator consults them for every tool
+  call as a side effect of tool execution.
+\item \emph{No round-trip}: the warning rides on the response the
+  agent is already going to receive.  There is no separate
+  \texttt{trace.query} turn.
+\item \emph{No agent code changes}: the agent's tool surface, system
+  prompt, and prompt template are unchanged.  Intercept is deployable
+  as a framework middleware on top of any LangChain-, AutoGen-, or
+  MCP-based agent without recompiling agent logic.
+\item \emph{No near-circularity}: the comparison
+  intercept-vs-no\_coord asks ``does prepending a peer warning to a
+  tool response change agent behavior?'' rather than ``does removing
+  a query channel change matches against in-store events?''  The
+  former is a clean causal test of the architecture; the latter is
+  partially definitional.
+\end{enumerate}
+
+Intercept preserves the rest of ET-MCP's design vocabulary: the
+event taxonomy (\S\ref{sec:arch:taxonomy}), the failure-only writer
+policy, the task-scoped lifecycle, and the MCP-conformant transport
+(the orchestrator queries the same MCP server the pull architecture
+exposes, just from a different process and without an agent in the
+loop).  It is, in short, the same coordination primitive
+re-architected to remove the agent-as-reader assumption.
+
+\paragraph{Deployability.}
+The framework-level hook surface intercept rides on is already a
+production primitive in deployed multi-agent runtimes.  Amazon's
+Strands Agents SDK exposes \texttt{BeforeToolCallEvent} and
+\texttt{AfterToolCallEvent}, the latter explicitly designed to
+``rewrite the \texttt{ToolResultBlock} before it propagates to the
+model''~\cite{strandshooks2025}.  Amazon Bedrock AgentCore Policy
+``intercepts every tool call in real
+time''~\cite{agentcorepolicy2025}.  LangChain middleware's
+\texttt{wrap\_tool\_call} and \texttt{after\_model}
+hooks~\cite{langchainmiddleware2026} and Microsoft Agent Framework's
+function middleware~\cite{msagentframework2026} provide equivalent
+mechanisms.  In all four cases the primitive is the same: a
+framework layer that sits between agent and tool, can read both
+sides of the call, and can rewrite the result before the agent's
+next reasoning step.  These mechanisms are deployed today for
+blocking, validation, retries, and caching; we contribute the
+\emph{coordination semantics} that ride on top of the same hook
+surface---a typed, task-scoped, negative-knowledge store keyed on
+(tool name, arguments) tuples.  Intercept is therefore an additive
+extension to existing production runtimes, not a new agent
+framework.
+
+% Empirical comparison appears in §6.6.5 (retail subsection); this
+% subsection establishes the design contrast only.

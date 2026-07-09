@@ -1,0 +1,62 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Prior coordination systems.}
+CA-MCP~\cite{camcp2026} is the nearest prior system by name and
+substrate: server-to-server, positive plan state, single-trial;
+the authors explicitly disclaim cross-trial use.
+Terrarium~\cite{terrarium2025} is a second MCP-based system
+with a pull-style interface, but targets attack-surface analysis.
+MPAC~\cite{mpac2026} proposes Lamport-clock conflict resolution
+for the multi-principal case. Reflexion and
+ExpeL~\cite{reflexion2023,expel2024} share the negative-knowledge
+intuition but inject via prompt context and are single-agent or
+cross-task-transfer. Long-lived cross-task memory
+(MemGPT~\cite{memgpt2024}, G-Memory~\cite{gmemory2025}) operates
+at task-spanning rather than within-task granularity.
+AgentVerse and related orchestration substrates surveyed
+in~\cite{mast2025} round out the prior-systems comparison
+revisited in Table~\ref{tab:literature-vs-floor}. Framework-level hooks
+(Strands~\cite{strandshooks2025}, AgentCore
+Policy~\cite{agentcorepolicy2025},
+LangChain middleware~\cite{langchainmiddleware2026},
+Microsoft Agent Framework~\cite{msagentframework2026},
+AutoGen~\cite{autogen2023}, MetaGPT~\cite{metagpt2024})
+carry blocking, validation, retries, and caching but no
+coordination semantics, and any of them could host the same
+measurement protocol.
+
+\paragraph{Measurement methodology: the actual gap.}
+A concurrent thread measures the reliability of agent
+benchmarks. Yu~et~al.~\cite{multiagentmem2026} frame the
+multi-agent case as lacking remote direct memory access.
+Variance-decomposition work spans a 12-metric
+framework~\cite{rabanser2026reliability}, an ICC
+framework~\cite{mustahsan2025stochasticity}, Anthropic-side
+infrastructure noise~\cite{anthropicnoise2026}, aggregate
+pass@1 variance~\cite{randomnessagentic2026}, systematic
+agent reliability~\cite{reliabilitybench2026}, and input-noise
+robustness~\cite{agentnoisebench2026}.
+\textbf{None of these reports paired configuration-equivalent
+replication on a state-validated multi-agent coordination
+benchmark, and none conditions on a coordination-active
+sub-event.} Bedi~et~al.~\cite{bedi2025paradox} (KDD~'25,
+same workshop series) document a component-vs-system paradox
+in clinical multi-agent settings but treat the system as a
+black box. Cuadron~et~al.'s
+$\tau^2$-bench-verified~\cite{tau2bench_verified2025} fixes
+tasks while ours fixes transport; the two compose. AgentTrace's
+post-hoc causal graphs~\cite{agenttrace2026} and
+STATE-Bench~\cite{statebench2026}'s memory-agnostic harness
+are complementary rather than competitive.
+The central claim of this paper, that coordination effect
+sizes should be reported relative to a same-model paired
+coordination-active variance gate, is what fills that gap.
+Ou~et~al.~\cite{ou2025coordination} compare
+orchestrator-mediated vs.\ shared-notebook coordination on
+TravelPlanner but neither pair at matched payload nor report
+a coordination-active variance floor, and we revisit them in
+Table~\ref{tab:literature-vs-floor} as one of the recent
+coordination papers whose reported effects straddle the paired
+noise envelope measured here on Haiku~4.5 / $\tau^2$-bench
+retail (pooled upper CI $\lesssim 15$\,pp).

@@ -1,0 +1,23 @@
+\section{Background and Motivation}
+\label{sec:background}
+
+\paragraph{Coordination failure is measured, not anecdotal.}
+The Multi-Agent System Taxonomy (MAST)~\cite{mast2025}
+attributes $36.94\%$ of failures in $1{,}600+$ production agent
+traces to inter-agent coordination breakdowns, the single
+largest category, and CodeDelegator~\cite{codedelegator2026}
+documents context pollution scaling with handoff payload size.
+Coordination is therefore a measurable target, not an
+anecdotal one; the reliability of those measurements is
+the load-bearing question.
+
+\paragraph{ET-MCP as measurement substrate.}
+We use ET-MCP, a task-scoped negative-event store exposed
+through MCP 2026-07-28~\cite{mcpspec2026} primitives, as the
+substrate under test. The architectural details are secondary
+to this paper's claim; what matters is that ET-MCP is an
+MCP-conformant coordination layer that can be toggled on and
+off in paired runs, isolating a coordination-active arm against
+a matched baseline. The remainder of the paper is about what
+that paired comparison reveals about variance, not about ET-MCP
+itself.

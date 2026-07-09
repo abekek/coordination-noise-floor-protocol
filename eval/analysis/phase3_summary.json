@@ -1,0 +1,119 @@
+{
+  "manifest": {
+    "model": "claude-haiku-4-5",
+    "git_sha": "54192d2",
+    "benchmark": "toy",
+    "conditions": [
+      "B1_full_context",
+      "B2_summarization",
+      "B3_ca_mcp_style",
+      "ET_MCP_default",
+      "ET_MCP_no_query",
+      "ET_MCP_random_query",
+      "ET_MCP_push_negative",
+      "ET_MCP_failure_strict",
+      "ET_MCP_write_everything"
+    ],
+    "queries": 30,
+    "seeds": 3,
+    "concurrency": 2,
+    "max_cost_usd": 200.0,
+    "max_total_tokens": null,
+    "temperature": 0.0,
+    "total_specs": 810,
+    "timestamp": "20260601_0028",
+    "results_dir": "results/lean_toy_20260601_0028"
+  },
+  "per_condition": {
+    "B1_full_context": {
+      "n": 90,
+      "completion_rate": 0.3333333333333333,
+      "avg_llm_calls": 8.055555555555555,
+      "avg_input_tokens": 11058.833333333334,
+      "avg_output_tokens": 1752.888888888889,
+      "avg_redundant_rate": 0.027777777777777776,
+      "avg_wall_time": 0.8389501945193236,
+      "std_completion": 0.47404546313997725
+    },
+    "B2_summarization": {
+      "n": 90,
+      "completion_rate": 0.14444444444444443,
+      "avg_llm_calls": 9.911111111111111,
+      "avg_input_tokens": 14267.077777777778,
+      "avg_output_tokens": 2475.688888888889,
+      "avg_redundant_rate": 0.002777777777777778,
+      "avg_wall_time": 14.863227750787821,
+      "std_completion": 0.3535092488376122
+    },
+    "B3_ca_mcp_style": {
+      "n": 90,
+      "completion_rate": 0.32222222222222224,
+      "avg_llm_calls": 8.244444444444444,
+      "avg_input_tokens": 11671.566666666668,
+      "avg_output_tokens": 1754.9333333333334,
+      "avg_redundant_rate": 0.013888888888888888,
+      "avg_wall_time": 3.7586570710719873,
+      "std_completion": 0.46994567646321306
+    },
+    "ET_MCP_default": {
+      "n": 90,
+      "completion_rate": 0.2222222222222222,
+      "avg_llm_calls": 9.622222222222222,
+      "avg_input_tokens": 13735.511111111111,
+      "avg_output_tokens": 2214.4555555555557,
+      "avg_redundant_rate": 0,
+      "avg_wall_time": 6.490843443282777,
+      "std_completion": 0.4180688018689386
+    },
+    "ET_MCP_no_query": {
+      "n": 90,
+      "completion_rate": 0.2222222222222222,
+      "avg_llm_calls": 9.722222222222221,
+      "avg_input_tokens": 13804.022222222222,
+      "avg_output_tokens": 2264.6,
+      "avg_redundant_rate": 0.027777777777777776,
+      "avg_wall_time": 1.5105550558435628,
+      "std_completion": 0.4180688018689386
+    },
+    "ET_MCP_random_query": {
+      "n": 90,
+      "completion_rate": 0.2222222222222222,
+      "avg_llm_calls": 9.61111111111111,
+      "avg_input_tokens": 13826.5,
+      "avg_output_tokens": 2227.3888888888887,
+      "avg_redundant_rate": 0,
+      "avg_wall_time": 25.113693771736386,
+      "std_completion": 0.4180688018689386
+    },
+    "ET_MCP_push_negative": {
+      "n": 90,
+      "completion_rate": 0.2222222222222222,
+      "avg_llm_calls": 9.766666666666667,
+      "avg_input_tokens": 13957.733333333334,
+      "avg_output_tokens": 2223.722222222222,
+      "avg_redundant_rate": 0.015277777777777777,
+      "avg_wall_time": 1.6186651781330712,
+      "std_completion": 0.4180688018689386
+    },
+    "ET_MCP_failure_strict": {
+      "n": 90,
+      "completion_rate": 0.2222222222222222,
+      "avg_llm_calls": 9.722222222222221,
+      "avg_input_tokens": 13918.055555555555,
+      "avg_output_tokens": 2250.1666666666665,
+      "avg_redundant_rate": 0,
+      "avg_wall_time": 1.0436364090095998,
+      "std_completion": 0.4180688018689386
+    },
+    "ET_MCP_write_everything": {
+      "n": 90,
+      "completion_rate": 0.2222222222222222,
+      "avg_llm_calls": 9.722222222222221,
+      "avg_input_tokens": 13918.055555555555,
+      "avg_output_tokens": 2250.1666666666665,
+      "avg_redundant_rate": 0,
+      "avg_wall_time": 1.0406627020979715,
+      "std_completion": 0.4180688018689386
+    }
+  }
+}

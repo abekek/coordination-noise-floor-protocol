@@ -1,0 +1,104 @@
+% v2-final §1 additions. n=100 numbers landed pull > intercept;
+% C2 reframed accordingly. Slot into existing intro after the
+% 2x2-design-space paragraph (line ~91 of 01-introduction.tex,
+% just before \paragraph{Contributions}).
+
+% --- New paragraph after the 2x2 design-space discussion ---
+
+The 2$\times$2 design space organizes \emph{where} coordination
+data moves, but leaves a second axis silent: \emph{who} reads it.
+Push designs (CA-MCP, LangGraph handoffs) hand the framework the
+writer decision and let downstream readers consume what is
+delivered; pull designs as in v1 of ET-MCP give the agent both
+sides---the agent is the active reader, deciding when and how to
+incorporate peer state.  A third combination is already a deployed
+primitive in production multi-agent runtimes but has not been
+studied as a coordination architecture: the framework acts as the
+active reader, intercepts the agent's tool call, queries the
+coordination store on the agent's behalf, and rewrites the tool
+\emph{response} to carry the result.  Strands'
+\texttt{BeforeToolCallEvent}/\texttt{AfterToolCallEvent}~\cite{strandshooks2025},
+Amazon Bedrock AgentCore Policy~\cite{agentcorepolicy2025},
+LangChain middleware's
+\texttt{wrap\_tool\_call}~\cite{langchainmiddleware2026}, and
+Microsoft Agent Framework's function
+middleware~\cite{msagentframework2026} all expose this hook surface
+today---for blocking, validation, retries, and caching, not for
+coordination.  We name this design \emph{intercept} and run the
+first controlled head-to-head against pull under matched payload.
+The empirical result is counter to the production-stack intuition:
+at $n{=}100$ tasks on $\tau^2$-bench retail, the agent-side reader
+(pull) significantly outperforms the framework-side reader
+(intercept) on pass$^k$ at comparable token cost
+(\S\ref{sec:eval:results:retail-intercept}, Cliff's
+$\delta=$$+0.18$ on pass$^1$, sign test $p=0.004$).  Selective
+agent reading, not blind framework injection, carries the
+architectural win.
+
+% --- Revised C2 contribution bullet (replaces v1's C2) ---
+
+\item \textbf{(C2) First controlled head-to-head of reader-side
+    coordination architectures.}  Holding the underlying event
+    store, writer policy, event taxonomy, and MCP transport
+    constant, we compare two reader-side architectures:
+    agent-as-reader (\emph{pull}) via a curated peer-warnings
+    summary at trial start, and framework-as-reader
+    (\emph{intercept}) via a \texttt{[PEER-WARNING]} block prepended
+    to a tool's response when the call's (name, arguments) match a
+    peer event of a prior failed trial of the same task.  On
+    $\tau^2$-bench retail~\cite{tau2bench2025} at $n{=}100$ tasks
+    (600 trials, Claude Haiku~4.5), pull reaches
+    pass$^1$=$0.62$ and pass$^2$=$0.44$; intercept reaches
+    pass$^1$=$0.44$ and pass$^2$=$0.33$; no-coordination reaches
+    pass$^1$=$0.54$ and pass$^2$=$0.38$.  Pull beats no-coordination
+    by $+8$\,pp on pass$^1$ and $+6$\,pp on pass$^2$; intercept
+    underperforms no-coordination by $-10$\,pp and $-5$\,pp.  Pull
+    significantly dominates intercept under matched payload (27 vs.\ 9
+    task-level wins on pass$^1$, sign test $p=0.004$ uncorrected,
+    Cliff's $\delta=+0.18$; 18 vs.\ 7 wins on pass$^2$,
+    $p=0.043$).  This is, to our knowledge, the first such
+    head-to-head under matched payload---the closest prior comparison
+    (Ou et al.~\cite{ou2025coordination}: notebook vs.\ orchestrator
+    on TravelPlanner) does not include the framework-side
+    intercept arm.  The within-system TravelPlanner ablation
+    (C2$^{\prime}$, below) generalizes: agent-mediated selective
+    reading is the load-bearing channel both within-system at
+    matched payload and across protocols at the public-benchmark
+    level.
+
+\item \textbf{(C2$^\prime$) Within-system corroboration on TravelPlanner.}
+    A nine-condition factorial on TravelPlanner (810 trials,
+    Haiku~4.5) holds the trace-event payload constant and varies the
+    retrieval channel and selection policy.  The load-bearing
+    contrast is default-vs-push\_negative: delivering the same
+    negative-knowledge payload via structured push instead of through
+    \texttt{trace.query} recovers part of the redundancy gain
+    ($5.2\%$ vs.\ ET-MCP default $3.9\%$, vs.\ $6.8$--$9.8\%$
+    push baselines) but underperforms pull, isolating the access
+    \emph{channel} as load-bearing under constant payload.  This
+    isolation is what generalizes to the $\tau^2$ public-benchmark
+    finding above.  A Silo-Bench sweep at $N{=}5$ (360 trials)
+    corroborates the mechanism on a third public benchmark; full
+    methodological details, ablations, and the MiniTrip negative
+    control appear in \S\ref{sec:evaluation}.
+
+% --- Additional contribution to add as C5 ---
+
+\item \textbf{(C5) Anthropic-native $\tau^2$-bench measurement
+    infrastructure.}  $\tau^2$-bench's bundled litellm-based
+    pipeline produces malformed Anthropic-API message histories on
+    multi-turn dual-control retail tasks, yielding $\geq 30\%$
+    silent infra-error rates with the stock \texttt{LLMAgent} on
+    Anthropic Haiku in our measurements, a failure class consistent
+    with multiple open BerriAI/litellm
+    issues~\cite{litellmissue12404,litellmissue15322}.  We release
+    a $\sim$700-line drop-in replacement that re-uses
+    $\tau^2$'s domain database, tools, task definitions, and
+    DB-hash reward function but constructs its conversation state
+    directly against the Anthropic Messages API.  Zero infra errors
+    at 600 trials.  We expect this to be useful measurement
+    infrastructure for groups evaluating Anthropic deployments on
+    the $\tau$-bench family and reproducing claims that rely on
+    multi-turn tool-call sequences, addressing a documented
+    reproducibility gap that bears directly on the workshop theme
+    of post-deployment trust controls.

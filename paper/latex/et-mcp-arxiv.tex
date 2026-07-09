@@ -1,0 +1,75 @@
+% arXiv preprint version: de-anonymized, nonacm (no ACM rights/conference
+% footer). Shares sections/, figures/, references.bib with et-mcp.tex.
+\documentclass[sigconf, nonacm]{acmart}
+
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds,patterns,shapes.geometric,decorations.pathreplacing,calc}
+
+% Reduce overfull-hbox bleed across 2-column gutter; minimal emergency stretch.
+\setlength{\emergencystretch}{1em}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+\setcopyright{none}
+
+\settopmatter{printacmref=false, printccs=false, printfolios=true}
+\pagestyle{plain}
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  keywordstyle=\color{blue!80!black},
+  commentstyle=\color{gray},
+  stringstyle=\color{red!70!black},
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!5},
+  language=Python,
+}
+
+\title{How Much Coordination Gain Is Real? A Paired Noise-Floor Protocol for Multi-Agent LLM Benchmarks}
+
+\author{Alibek Kaliyev}
+\email{alibek.kaliyev@utexas.edu}
+\affiliation{%
+  \institution{The University of Texas at Austin}
+  \city{Austin}
+  \state{Texas}
+  \country{USA}
+}
+
+\author{Artem Maryanskyy}
+\email{artem.maryanskyy@uber.com}
+\affiliation{%
+  \institution{Uber}
+  \city{San Francisco}
+  \state{California}
+  \country{USA}
+}
+
+\begin{document}
+
+\begin{abstract}
+\input{sections/00-abstract}
+\end{abstract}
+
+\maketitle
+
+\input{sections/01-introduction}
+\input{sections/02-background}
+\input{sections/03-related-work}
+\input{sections/04-architecture}
+\input{sections/05-implementation}
+\input{sections/06-evaluation}
+\input{sections/07-discussion}
+\input{sections/08-conclusion}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}

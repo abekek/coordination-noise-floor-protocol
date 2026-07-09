@@ -1,0 +1,26 @@
+% v2 conclusion draft. Leads with the architectural pivot and keeps
+% v1's "within-system ablation" as supporting evidence.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+ET-MCP names a coordination primitive for multi-agent LLM systems:
+typed events biased toward negative knowledge, task-scoped, addressed
+through an MCP-conformant transport.  Two reader-side architectures
+realize the primitive: a \emph{pull} interface that hands the agent
+the decision to query, and an \emph{intercept} layer that relocates
+the read to the framework.  Within-system evidence from the
+TravelPlanner factorial isolates the pull channel as load-bearing
+under constant payload; cross-protocol evidence on $\tau^2$-bench
+retail at $n{=}30$ tasks shows the intercept layer outperforms both
+pull and no-coordination on pass$^k$ (Cliff's $\delta=$TODO,
+$p=$TODO Holm-corrected) while using TODO\% fewer input tokens
+than no-coordination.  Pull is not better than no-coordination on
+this benchmark---the architectural pivot is the v2 contribution.
+
+We release the $\sim$300-line Anthropic-native $\tau^2$-bench harness
+that made these measurements reproducible after the bundled
+litellm-based pipeline could not.  Coordination primitives deserve
+not only a first-class substrate in the MCP toolchain but also a
+framework-side reader path; ET-MCP-intercept is a concrete proposal
+for both.

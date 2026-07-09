@@ -1,0 +1,146 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Two LLM agents work in parallel on the same multi-step itinerary.
+The first attempts to book a flight, discovers no inventory,
+abandons the path, and moves on. The second, started moments
+later by the same orchestrator, attempts the same booking
+through the same API and re-discovers the same dead end. The
+first agent's failure lived only in its private scratchpad. This
+is a structural property of how multi-agent LLM systems (MAS)
+currently coordinate~\cite{mast2025,codedelegator2026}. Recent
+architectures address it with coordination channels (structured
+handoffs, shared memory, server-side state) and report small
+benchmark gains as evidence one design beats another.
+
+\paragraph{Why we wrote this paper.}
+We initially set out to evaluate two such designs (an
+agent-side \emph{pull} channel and a framework-side
+\emph{intercept} channel) against a no-coordination baseline on
+$\tau^2$-bench retail. The head-to-head shows no detectable
+effect at the available power: the coordination-active subsets
+contain $n{=}8$--$17$ informative pairs after ties, far short of
+what a medium-sized improvement would require. Unpacking that
+non-result forced a question we should have asked at the start:
+\emph{what is the run-to-run variance between protocols whose
+API inputs are equivalent at trial $0$?} A single number is
+enough to invert the read of much of the recent coordination
+literature. The rest of the paper answers that question and
+traces what it implies for our own and others' architectural
+claims.
+
+\paragraph{ET-MCP as substrate.}
+Measuring variance under matched payload required a
+representative coordination substrate, so we built one.
+\textbf{ET-MCP} is an Ephemeral Trace store of typed
+negative-knowledge events exposed via the Model Context Protocol
+(MCP) 2026-07-28~\cite{mcpspec2026}: task-scoped, append-mostly,
+with a TF-IDF (term-frequency / inverse-document-frequency)
+ranker over $\textsc{failed\_path}$-typed events. Two reader-side
+variants ride on the same store. \emph{Pull} makes the agent the
+active reader: it calls \texttt{trace.query} when peer state
+might inform the next decision. \emph{Intercept} makes the
+framework the active reader: it consults the store transparently
+on every tool call and prepends a \texttt{[PEER-WARNING]} block
+when (name, arguments) match a peer event. Intercept rides on
+the same hook surface already deployed for blocking, validation,
+retries, and caching in
+Strands~\cite{strandshooks2025}, AgentCore
+Policy~\cite{agentcorepolicy2025},
+LangChain~\cite{langchainmiddleware2026}, and the
+Microsoft Agent Framework~\cite{msagentframework2026}.
+
+\paragraph{The result that reframed the paper.}
+Running this substrate against its no-coordination baseline
+yielded no detectable effect at the available power. At
+$\tau^2$-bench retail, Haiku $4.5$, $T{=}0$, $n{=}100$ tasks,
+pull, intercept, and no\_coord all reach trial-$1$ success
+$0.54$ (paired sign tests fail to reject, $p{=}1.0$ for all
+three contrasts;
+\S\ref{sec:eval:results:retail-intercept}).
+Decomposed by trial, no\_coord and intercept are
+\emph{configuration-equivalent} at trial $0$: their requests to
+the API are equivalent by code inspection (system prompt, tool
+list, sampling parameters, message-array construction; see
+\S\ref{sec:eval:request-equivalence} for what we did and did not
+verify). This is the only genuinely clean contrast in the
+trio; the paired sign-test disagreement is $21/11/68$ at
+seed-$1$ and $13/13/74$ at seed-$2$ ($+10$\,pp and $0$\,pp
+signed gaps; pooled $+5$\,pp, Wilson CI $[{-}2,{+}12]$,
+Bonferroni $p_{\text{corr}}{=}0.711$, not significant). The
+largest single-seed paired contrast was pull-vs-intercept at
+seed-$1$ ($27/9/64$, $+18$\,pp, $p_{\text{corr}}{=}0.012$),
+but it did not reproduce at seed-$2$ ($18/21/61$, $-3$\,pp,
+$p_{\text{corr}}{=}1.0$); the pooled gap is
+$+7.5$\,pp with Wilson upper CI ${\sim}15$\,pp. We characterize
+the configuration-equivalent envelope on this benchmark, model,
+and harness as a paired-gap distribution whose observed range
+across two seeds is $[{-}3,{+}18]$\,pp and whose pooled upper
+Wilson CI is $\lesssim 15$\,pp---no single-seed Bonferroni
+significance survives a second seed. The floor is local,
+not universal; cross-model and cross-domain probes (Haiku
+airline $n{=}30$, Sonnet retail $n{=}30$) confirm it does not
+transfer.
+
+\paragraph{Coordination-active pass$^k$.}
+To separate run-to-run variance from mechanism effect we define
+$\textsc{pass}^k_{\textrm{active}}$: marginal pass$^k$
+restricted to tasks where the peer-coordination store was
+non-empty at trial start. Marginal pass$^k$ answers ``should I
+deploy the whole system?'' Active pass$^k$ answers ``did
+coordination help when it had an opportunity to.'' The two
+diverge whenever empty-store trials carry unrelated
+configuration perturbations, which is the situation we encounter.
+Three runtime alarms operationalize the metric on Amazon Bedrock
+AgentCore and SageMaker Model
+Monitor~\cite{sagemaker_monitor2022}
+(\S\ref{sec:eval:deployment}).
+
+\paragraph{Contributions.}
+Four contributions track the threads above:
+\begin{itemize}
+    \item \textbf{(C1) Measurement protocol.} A same-model,
+        paired, configuration-equivalent variance procedure for
+        coordination-architecture claims on state-validated MAS
+        benchmarks. The floor splits into an
+        \emph{identity-replay} component (byte-identical
+        payloads, which we do not measure) and a
+        \emph{configuration-equivalent} component (same intended
+        setup, code-inspection-verified, which we
+        do)~(\S\ref{sec:eval:request-equivalence}).
+
+    \item \textbf{(C2) Finding.} On $\tau^2$-bench retail with
+        Haiku $4.5$ across two $n{=}100$ seeds, the clean
+        configuration-equivalent paired-gap pooled CI is
+        $[{-}2,{+}12]$\,pp (no\_coord vs.\ intercept);
+        no single-seed contrast is significant after Bonferroni
+        once a second seed is measured. The observed envelope
+        spans $[{-}3,{+}18]$\,pp with pooled upper Wilson CI
+        $\lesssim 15$\,pp. Seven of ten recent multi-agent
+        coordination architectures
+        (Table~\ref{tab:literature-vs-floor})
+        report headline gains below this envelope and one more
+        sits inside it; each falls below or inside the envelope
+        measured here.
+
+    \item \textbf{(C3) Metric.}
+        $\textsc{pass}^k_{\textrm{active}}$ (coordination-active
+        pass$^k$): pass$^k$ conditioned on a non-empty
+        coordination store. Sample-size guidance and three
+        runtime instrumentation alarms ship the metric as a
+        pre-deployment release gate
+        (\S\ref{sec:eval:deployment}).
+
+    \item \textbf{(C4) Failure-mode diagnosis (preliminary).}
+        The trial-level data surface three candidate
+        failure modes of naive negative-knowledge coordination
+        (writer mis-attribution; per-match injection noise;
+        brittle keying), with matched architectural refinements
+        on existing production hook surfaces
+        (\S\ref{sec:proposals}). Single-judge audit and small-$n$
+        validation leave these as hypotheses for confirmatory work.
+\end{itemize}
+
+ET-MCP itself and the harness mitigating a documented
+litellm~\cite{litellmissue12404,litellmissue15322} bug class
+appear as supporting artifacts rather than claimed contributions.

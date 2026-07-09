@@ -1,0 +1,75 @@
+% v2-final conclusion. n=100 numbers landed: pull > intercept > no_coord.
+% Reframed around the pull-channel generalization story with intercept
+% as the (negative) architectural alternative we tested honestly.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+ET-MCP names a coordination primitive for multi-agent LLM systems:
+typed events biased toward negative knowledge, task-scoped, addressed
+through an MCP-conformant transport.  We instantiate two reader-side
+architectures over the same store and run the first controlled
+head-to-head under matched payload: \emph{pull} (agent-as-reader, via
+a curated peer-warnings summary at trial start) and \emph{intercept}
+(framework-as-reader, via a \texttt{[PEER-WARNING]} block prepended
+to a tool's response when the call's (name, arguments) match a peer
+event from a prior failed trial).  On $\tau^2$-bench retail at
+$n{=}100$ tasks (600 trials, Claude Haiku~4.5), pull significantly
+dominates intercept: $9$ task-level wins against $27$ losses on
+pass$^1$ (sign test $p{=}0.004$, Cliff's $\delta{=}+0.18$;
+$7$ vs.\ $18$ on pass$^2$, $p{=}0.043$).  Pull also lifts
+pass$^1$ by $+8$\,pp and pass$^2$ by $+6$\,pp over no-coordination
+(directional, $p{=}0.18$ and $p{=}0.36$); intercept underperforms
+no-coordination by $-10$\,pp and $-5$\,pp.  Within-system evidence
+from the 810-trial TravelPlanner factorial corroborates the
+mechanism: holding the negative-knowledge payload constant, the pull
+channel architecturally outperforms structured push baselines
+($3.9\%$ vs.\ $5.2\%$ redundancy, Wilcoxon-significant).  The within-
+system pull-channel claim generalizes to a Sierra-published peer-
+reviewed benchmark at the public-protocol level.
+
+The architectural lesson is the v2 contribution and runs counter to
+the production-stack intuition.  Production multi-agent runtimes
+expose framework-level tool-call interception as a primitive
+(Strands hooks~\cite{strandshooks2025}, AgentCore
+Policy~\cite{agentcorepolicy2025}, LangChain
+middleware~\cite{langchainmiddleware2026}, Microsoft Agent
+Framework~\cite{msagentframework2026}); these mechanisms are
+deployed today for blocking, validation, retries, and caching, and
+the industry trend points toward more framework mediation.  Our
+finding is that the same hook surface, repurposed to inject
+coordination warnings on every matching tool call, \emph{harms}
+the headline metric---intercept fires a mean of $2.8$ warnings per
+trial and the agent cannot weigh them globally against the current
+state.  The agent's single-summary read at trial start carries more
+useful signal than the framework's blind per-call injection.
+Selective agent-mediated reading, not framework-side blind
+injection, is the architecturally superior choice for coordination
+semantics, at the scale and model we test.  Coordination is not
+symmetric with blocking.
+
+We additionally release a $\sim$700-line Anthropic-native
+$\tau^2$-bench harness that mitigates a documented bug class in
+$\tau^2$-bench's bundled litellm-based pipeline (consistent with
+multiple open issues~\cite{litellmissue12404,litellmissue15322}).
+Zero infra errors at 600 trials.  We expect this measurement
+infrastructure to be useful to other groups reproducing or extending
+$\tau$-bench-family claims on Anthropic deployments---the workshop
+theme of post-deployment trust controls applies to the benchmark
+itself as much as to the systems it measures.
+
+Several directions remain open.  The writer-side selection policy
+(currently the last $k{=}3$ tool calls of any failed trial) is a
+hand-tuned causal-attribution heuristic; a learned attribution policy
+would likely tighten both pull and intercept.  The intercept finding
+may invert under a more selective framework-side filter that
+suppresses redundant warnings within a single trial---we tested the
+naive ``fire on every match'' design as the apples-to-apples
+contrast against pull's single-summary read, and a smarter
+framework reader would be a separate study.  Pass$^k$ at $k{>}2$
+would let us measure whether the architectural gap widens with
+retry budget.  The head-to-head should be repeated on the other
+$\tau^2$ domains (airline, telecom) and on stronger models
+(Sonnet, Opus) once the harness's domain-bridging layer is
+generalized.  We release the code, harness, and trial-level data to
+make these follow-ups straightforward.

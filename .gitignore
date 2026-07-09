@@ -1,0 +1,66 @@
+# LaTeX build artifacts
+paper/latex/*.aux
+paper/latex/*.bbl
+paper/latex/*.blg
+paper/latex/*.fdb_latexmk
+paper/latex/*.fls
+paper/latex/*.log
+paper/latex/*.out
+paper/latex/*.synctex.gz
+paper/latex/*.toc
+paper/latex/*.nav
+paper/latex/*.snm
+paper/latex/*.vrb
+paper/latex/missfont.log
+paper/latex/*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# uv
+# uv.lock is intentionally committed for reproducibility
+
+# Eval artifacts (regeneratable)
+eval/runs/
+eval/results/
+*.jsonl
+
+# Vendored third-party benchmarks (set up via eval/adapters/tau2_etmcp/SETUP.md)
+# Vendored tau2-bench: track source + retail/airline/mock data subset;
+# exclude environments, run outputs, and the large unused domains.
+eval/benchmarks/tau2_bench/_vendor/.venv/
+eval/benchmarks/tau2_bench/_vendor/data/tau2/results/
+eval/benchmarks/tau2_bench/_vendor/data/tau2/simulations/
+eval/benchmarks/tau2_bench/_vendor/data/voice/
+eval/benchmarks/tau2_bench/_vendor/data/tau2/domains/telecom/
+eval/benchmarks/tau2_bench/_vendor/data/tau2/domains/banking_knowledge/
+
+# Secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+texput.log
+*.tar.gz

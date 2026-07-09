@@ -1,0 +1,46 @@
+% Headline pass^k bar chart for τ²-bench retail.  Pure TikZ
+% implementation (no pgfplots).  Grouped bars: three protocols
+% × two metrics.  Single-column figure.
+\begin{tikzpicture}[
+    font=\small,
+    barscale/.style={yscale=3.2, xscale=0.95},
+]
+\def\barwidth{0.18}
+\def\groupwidth{1.0}
+\def\px#1#2#3{
+    \draw[fill=#3] (#1-\barwidth/2, 0) rectangle (#1+\barwidth/2, #2);
+    \node[font=\scriptsize, above=-1pt] at (#1, #2) {\pgfmathprintnumber[fixed,fixed zerofill,precision=2]{#2}};
+}
+\begin{scope}[barscale]
+% Y axis ticks
+\foreach \y in {0, 0.2, 0.4, 0.6} {
+    \draw[gray!40, very thin] (0, \y) -- (3.6, \y);
+    \node[left, font=\scriptsize, gray!60!black] at (0, \y) {\pgfmathprintnumber[fixed,precision=1]{\y}};
+}
+\draw[->, thin] (0,0) -- (0, 0.72);
+\draw[->, thin] (0,0) -- (3.6, 0);
+
+% Group centers: 0.8 (no_coord), 1.8 (pull), 2.8 (intercept)
+% Within each group: -0.12 (pass^1), +0.12 (pass^2)
+% Pass^1 (blue), Pass^2 (orange)
+\px{0.8-0.12}{0.54}{blue!50!white}
+\px{0.8+0.12}{0.38}{orange!70!white}
+\px{1.8-0.12}{0.62}{blue!50!white}
+\px{1.8+0.12}{0.44}{orange!70!white}
+\px{2.8-0.12}{0.44}{blue!50!white}
+\px{2.8+0.12}{0.33}{orange!70!white}
+
+% X labels
+\node[below, font=\small] at (0.8, 0) {\texttt{no\_coord}};
+\node[below, font=\small] at (1.8, 0) {\texttt{pull}};
+\node[below, font=\small] at (2.8, 0) {\texttt{intercept}};
+% Y axis label
+\node[rotate=90, font=\small] at (-0.55, 0.36) {Success rate};
+\end{scope}
+
+% Legend (placed outside the scaled coords)
+\node[draw=blue!50!black, fill=blue!50!white, minimum size=8pt, inner sep=0] (l1) at (1.2, 3.5) {};
+\node[right=2pt of l1, font=\small] {pass$^1$};
+\node[draw=orange!50!black, fill=orange!70!white, minimum size=8pt, inner sep=0] (l2) at (2.4, 3.5) {};
+\node[right=2pt of l2, font=\small] {pass$^2$};
+\end{tikzpicture}

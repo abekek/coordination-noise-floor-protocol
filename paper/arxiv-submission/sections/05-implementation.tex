@@ -1,0 +1,16 @@
+\section{Implementation}
+\label{sec:implementation}
+
+To produce clean measurements, we built an Anthropic-native
+$\tau^2$-bench harness (\textasciitilde$700$ lines) that replaces
+only the conversation-state construction layer; $\tau^2$'s domain
+database, tools, task definitions, and DB-hash reward are
+unchanged, and no model, sampling, or scoring code is touched, so
+the harness rewrite cannot itself contribute to the trial-$0$
+disagreement of \S\ref{sec:eval:request-equivalence}. This bypasses a documented bug class in the stock
+$\tau^2$-bench/litellm
+pipeline~\cite{litellmissue12404,litellmissue15322} that corrupts
+$\geq 30\%$ of Haiku 4.5 trials, enabling zero-infrastructure-error
+sweeps. The harness and the \texttt{et\_mcp} substrate of
+\S\ref{sec:architecture} ship together in the open-source
+repository.

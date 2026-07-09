@@ -1,0 +1,81 @@
+% v2 draft — telecom subsection skeleton. Real numbers land from the
+% Day 4 sweep summary.json. This file is .tex.draft (not .tex) and is
+% NOT included in et-mcp.tex until §6 is restructured. Treat as a working
+% template — wording is not final.
+
+\subsubsection{Cross-trial coordination on $\tau^2$-bench telecom: pass$^k$ as a coordination metric}
+\label{sec:eval:results:tau2}
+
+We adapt $\tau^2$-bench's telecom domain~\cite{tau2bench2025} as a
+fourth evaluation cell.  $\tau^2$-bench is a state-validated tool-use
+benchmark whose scorer compares the agent's final database state
+against a target state produced by replaying a reference action
+sequence; redundant or wrong-state write calls register as evaluation
+failures directly, so the redundancy reduction ET-MCP targets has
+intrinsic user-visible value here in a way it does not on
+Silo-Bench or our internal benchmarks.  The headline metric is
+\textsc{pass}$^k$: the fraction of tasks where \emph{all $k$
+independent trials} succeed.  pass$^k$ is sensitive to coordination
+because, by construction, a single trial-level failure on any of the
+$k$ trials drops a task out of the pass$^k$ pool.
+
+\paragraph{Setup.}
+We adapt the four ET-MCP coordination protocols of
+\S\ref{sec:eval:ablations} to $\tau^2$-bench's single-agent interface by
+making the ET-MCP trace store \emph{task-scoped across trials} (the
+store allocates when a task starts, persists across the $k$ trials,
+and tears down at task close).  This lets the four protocols differ
+only in what they expose to trial $j$ of the data accumulated by
+trials $1,\ldots,j-1$ of the same task.  The same writer-side selection
+policy (failure\_only: record \textsc{failed\_path} on any errored
+tool call) is used by all three coordinated protocols; only the
+reader-side interface differs:
+%
+\begin{itemize}
+  \item \textbf{no\_coord}: each trial gets an isolated, fresh store;
+    no cross-trial reads or writes.
+  \item \textbf{push\_scratchpad}: cross-trial shared store; every
+    event from prior trials is dumped wholesale into the agent's
+    per-turn system prompt (a CA-MCP-style unfiltered context push).
+  \item \textbf{message\_passing}: cross-trial shared store;
+    prior-trial events are summarized into a single fixed-format
+    handoff message attached as a system note (push, fixed schema).
+  \item \textbf{et\_mcp}: cross-trial shared store; agents pull
+    relevant prior-trial events on demand via a TF-IDF query against
+    the current input, top-$k$ events returned as a
+    \texttt{<peer\_warnings>} block.
+\end{itemize}
+%
+This is the same four-cell design as the Silo-Bench and TravelPlanner
+factorial ablations of \S\ref{sec:eval:results:silo} and
+\S\ref{sec:eval:results:travelplanner-isolation}; what changes is the
+benchmark's evaluation semantics, where the redundancy metric is
+intrinsic to the official pass$^k$ score rather than a process-only
+diagnostic.
+
+\paragraph{Results.}
+% TODO: drop in headline table from /tmp/v2_*/summary.json — pass^1, pass^k,
+% mean redundant-call rate, mean agent cost per protocol cell.
+% Also: paired Wilcoxon on (task_id, trial) between et_mcp and each of
+% no_coord / push_scratchpad / message_passing, with Cliff's $\delta$
+% and Holm-Bonferroni correction within each metric family.
+
+% Three observations to write up depending on what the numbers show:
+%
+% (1) If et_mcp pass^k > no_coord pass^k significantly: this is the
+%     "coordination converts to outcomes" result that v1 lacked. Headline.
+%
+% (2) If et_mcp redundancy < no_coord redundancy on a metric that affects
+%     pass^k (write actions matching prior errored writes): the mechanism
+%     fires AND moves the user-visible score. Sharper than v1's process-only
+%     claim.
+%
+% (3) If et_mcp ≈ push_scratchpad on pass^k but et_mcp uses fewer tokens:
+%     the regime-dependent cost-quality story holds — pull recovers the
+%     same outcome with less cost. Pareto-dominance frame.
+
+\paragraph{What this benchmark adds over v1.}
+% TODO: in cases where v1's TravelPlanner factorial was process-only,
+% telecom gives outcome conversion because the redundancy metric is
+% wired directly into the scorer. State the convergence (or lack
+% thereof) explicitly.

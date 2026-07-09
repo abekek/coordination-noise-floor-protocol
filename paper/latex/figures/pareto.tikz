@@ -1,0 +1,65 @@
+% Pareto frontier on Silo-Bench N=5, Haiku 4.5 (360 trials).
+% X = mean tokens per trial (thousands); Y = completion rate.
+% Pareto frontier: broadcast --- sfs --- ET-MCP.  P2P is strictly dominated by ET-MCP.
+\begin{tikzpicture}[
+  font=\small,
+  proto/.style={draw, circle, fill=blue!20, minimum size=2.4mm, inner sep=0pt},
+  etmcp/.style={draw, circle, fill=orange!85, minimum size=3mm, inner sep=0pt},
+  dominated/.style={draw, circle, fill=red!15, minimum size=2.4mm, inner sep=0pt},
+  axis/.style={-{Stealth[length=1.5mm]}, thick, gray!60!black},
+  frontier/.style={thick, orange!60!black, dashed},
+  label/.style={font=\scriptsize, inner sep=1.5pt},
+]
+% Plot area: tokens 60--140 K on x, completion 0.15--0.36 on y
+% Map x: x_data in [60,140] -> tikz [0, 6]
+% Map y: y_data in [0.15, 0.36] -> tikz [0, 4]
+% Helper: token x in K -> tikz x = (x-60)/80 * 6
+% Helper: completion -> tikz y = (y-0.15)/0.21 * 4
+
+% Axes
+\draw[axis] (0,0) -- (6.3,0) node[right,font=\scriptsize] {tokens};
+\draw[axis] (0,0) -- (0,4.4) node[above,font=\scriptsize] {completion};
+
+% X ticks
+\foreach \xd/\xtikz in {60/0, 80/1.5, 100/3, 120/4.5, 140/6} {
+  \draw[gray!60] (\xtikz, -0.05) -- (\xtikz, 0.05);
+  \node[font=\scriptsize, below=1pt] at (\xtikz, 0) {\xd K};
+}
+% Y ticks
+\foreach \yd/\ytikz in {0.20/0.95, 0.25/1.90, 0.30/2.86, 0.35/3.81} {
+  \draw[gray!60] (-0.05, \ytikz) -- (0.05, \ytikz);
+  \node[font=\scriptsize, left=1pt] at (0, \ytikz) {\yd};
+}
+
+% Pareto-frontier hint (broadcast -> sfs -> etmcp)
+\draw[frontier] (0.6, 0.762) -- (1.95, 2.667) -- (2.385, 3.429);
+
+% Points
+% msg = (125, 0.20). tikz: x = (125-60)/80*6 = 4.875, y = (0.20-0.15)/0.21*4 = 0.952
+\node[dominated] (msg) at (4.875, 0.952) {};
+\node[label, above right=-0.5mm and 0.2mm of msg] {P2P (\texttt{msg})};
+
+% broadcast = (68, 0.23). x = 0.6, y = 1.524 ... wait recompute: (0.23-0.15)/0.21*4 = 0.381/0.21 ... wait
+% (0.23-0.15) = 0.08, /0.21 = 0.381, *4 = 1.524. Hmm let me redo. Want broadcast y near 1.5.
+% Actually 0.762 was wrong. Let me use: y = (yd - 0.15)/0.21 * 4
+% broadcast 0.23 -> (0.08/0.21)*4 = 1.524
+% sfs 0.29 -> (0.14/0.21)*4 = 2.667
+% etmcp 0.33 -> (0.18/0.21)*4 = 3.429
+% msg 0.20 -> (0.05/0.21)*4 = 0.952  OK matches
+\node[proto] (broadcast) at (0.6, 1.524) {};
+\node[label, below right=-0.5mm and 0.5mm of broadcast] {Broadcast};
+
+% sfs = (86, 0.29). x = (86-60)/80*6 = 1.95, y = 2.667
+\node[proto] (sfs) at (1.95, 2.667) {};
+\node[label, above left=-1mm and 0.5mm of sfs] {Shared FS};
+
+% etmcp = (92, 0.33). x = (92-60)/80*6 = 2.4, y = 3.429
+\node[etmcp] (et) at (2.4, 3.429) {};
+\node[label, above right=-1.5mm and 0.5mm of et] {\textbf{ET-MCP}};
+
+% Re-draw frontier line so points overlay it nicely
+\draw[frontier] (broadcast) -- (sfs) -- (et);
+
+% "Dominated" annotation for P2P
+\draw[->, red!60!black, thick, dashed] (msg) ++(-1.2, 0.3) node[font=\scriptsize, red!60!black, align=center] {dominated} -- (msg);
+\end{tikzpicture}
