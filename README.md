@@ -7,7 +7,8 @@ Alibek Kaliyev (UT Austin) · Artem Maryanskyy (Uber)
 Accepted at the **KDD 2026 Workshop on Agentic AI Evaluation and Trustworthiness**.
 
 📄 **[Interactive paper page](https://abekek.github.io/coordination-noise-floor-protocol/)** ·
-[PDF](https://abekek.github.io/coordination-noise-floor-protocol/et-mcp-paper.pdf)
+[PDF](https://abekek.github.io/coordination-noise-floor-protocol/et-mcp-paper.pdf) ·
+[Poster](https://abekek.github.io/coordination-noise-floor-protocol/poster.pdf)
 
 ## TL;DR
 
@@ -32,6 +33,7 @@ constraint.
 |---|---|
 | `paper/latex/` | LaTeX source (workshop version `et-mcp.tex`, arXiv variant `et-mcp-arxiv.tex`, shared `sections/` + `figures/`) |
 | `paper/arxiv-submission/` | Flattened, self-contained arXiv upload tree |
+| `paper/poster/` | KDD workshop poster (pure-TikZ XeLaTeX source + PDF; needs Helvetica Neue and Menlo, i.e. macOS fonts) |
 | `site/` | The interactive paper page (single self-contained HTML file) |
 | `eval/adapters/v2_pivot/` | **The measurement harness**: Anthropic-native τ²-bench orchestrator, the four protocols, sweep runner, paired-stats analysis, request-equivalence audits |
 | `eval/results/` | Raw per-trial JSONL artifacts behind the paper's tables/figures (see inventory below) |

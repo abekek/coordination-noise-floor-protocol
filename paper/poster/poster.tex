@@ -1,0 +1,326 @@
+% KDD 2026 Workshop poster — landscape 40x22.5in for on-screen display.
+% Pure TikZ layout (no beamerposter). Compile with xelatex, TWO passes
+% (remember picture needs the second pass to anchor to the page).
+%
+% IMPORTANT: every node that sets `text width` MUST receive its base font
+% via the `font=` option (baked into the styles below). Switching fonts
+% inline at the start of a text-width node collapses interword spaces to
+% zero width (fontspec + XeTeX + TikZ vbox interaction). Inline switches
+% *within* a node whose base font came from `font=` are safe.
+\documentclass{article}
+\usepackage[paperwidth=101.6cm,paperheight=57.15cm,margin=0cm]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc,arrows.meta}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\setmainfont{Helvetica Neue}
+\newfontfamily\mono{Menlo}
+\newfontfamily\heavy{Helvetica Neue Bold}
+\newfontfamily\medium{Helvetica Neue Medium}
+
+% ---- palette (matches the paper page) ----
+\definecolor{ink}{HTML}{17243A}
+\definecolor{inksoft}{HTML}{4D5D78}
+\definecolor{inkfaint}{HTML}{8494AC}
+\definecolor{paperbg}{HTML}{FAFBFD}
+\definecolor{gridc}{HTML}{EDF1F7}
+\definecolor{linec}{HTML}{CBD6E5}
+\definecolor{sigred}{HTML}{C43D2E}
+\definecolor{redink}{HTML}{A32E21}
+\definecolor{redwash}{HTML}{F7E8E6}
+\definecolor{nocoord}{HTML}{8B9CB3}
+\definecolor{pullc}{HTML}{4C8CB9}
+\definecolor{interceptc}{HTML}{D97A4C}
+\definecolor{okgreen}{HTML}{2E7D6B}
+\definecolor{amber}{HTML}{B08A1E}
+\definecolor{cardbg}{HTML}{FFFFFF}
+
+% ---- type scale (the only sizes on the poster) ----
+\newcommand{\TitleFont}{\heavy\fontsize{92}{100}\selectfont}
+\newcommand{\SubFont}{\fontsize{32}{42}\selectfont}
+\newcommand{\AuthFont}{\medium\fontsize{25}{33}\selectfont}
+\newcommand{\HeadFont}{\heavy\fontsize{40}{48}\selectfont}
+\newcommand{\BodyFont}{\fontsize{26}{38}\selectfont}
+\newcommand{\CapFont}{\fontsize{21}{30}\selectfont}
+\newcommand{\MonoFont}{\mono\fontsize{22}{30}\selectfont}
+\newcommand{\MonoSmall}{\mono\fontsize{19}{26}\selectfont}
+\newcommand{\NumFont}{\heavy\fontsize{44}{48}\selectfont}
+\newcommand{\CardHead}{\heavy\fontsize{29}{40}\selectfont}
+\newcommand{\CardSub}{\fontsize{22}{31}\selectfont}
+
+% ---- semantic styles (font= is mandatory: see header comment) ----
+\tikzset{
+  eyebrow/.style={anchor=north west,text=redink,font=\MonoFont},
+  colhead/.style={anchor=north west,text=ink,align=left,font=\HeadFont},
+  body/.style={anchor=north west,text=inksoft,align=left,font=\BodyFont},
+  capnote/.style={anchor=north west,text=inkfaint,align=left,font=\CapFont},
+  card/.style={anchor=north west,fill=cardbg,draw=linec,line width=1.2pt,
+               rounded corners=12pt,align=left},
+  darkcard/.style={anchor=north west,fill=ink,rounded corners=14pt,align=left,
+                   font=\CardHead},
+  redcard/.style={anchor=north west,fill=redwash,rounded corners=12pt,align=left},
+  archbox/.style={draw=linec,line width=1.8pt,fill=cardbg,rounded corners=8pt,
+                  minimum height=1.7cm,text=ink,font=\MonoFont,anchor=center},
+  archlab/.style={text=inksoft,font=\CapFont,align=left},
+}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,remember picture,overlay,shift={(current page.south west)}]
+% ================= canvas =================
+\fill[paperbg] (0,0) rectangle (101.6,57.15);
+\foreach \gx in {0,2.4,...,101.6} \draw[gridc,line width=0.5pt] (\gx,0) -- (\gx,57.15);
+\foreach \gy in {0,2.4,...,57.15} \draw[gridc,line width=0.5pt] (0,\gy) -- (101.6,\gy);
+
+% ================= header (above divider y=47.4) =================
+\node[eyebrow] at (3,55.3)
+  {▮ KDD 2026 · WORKSHOP ON AGENTIC AI EVALUATION AND TRUSTWORTHINESS};
+\node[anchor=north west,text=ink,font=\TitleFont] at (2.9,54.0)
+  {How much coordination gain is \textcolor{redink}{\emph{real?}}};
+\node[anchor=north west,text=inksoft,font=\SubFont] at (3,50.3)
+  {A paired noise-floor protocol for multi-agent LLM benchmarks};
+\node[anchor=north west,text=ink,font=\AuthFont] at (3,48.6)
+  {Alibek Kaliyev$^{1}$ \quad Artem Maryanskyy$^{2}$\qquad
+   {\CapFont\color{inkfaint}$^{1}$The University of Texas at Austin \quad $^{2}$Uber}};
+
+% headline claim card (top right)
+\node[darkcard,inner xsep=1.4cm,inner ysep=1.15cm,text width=26.5cm] at (68.2,55.7)
+  {\color{white}Two protocols that both do \emph{nothing} differed by
+   +18\,pp on one seed and −3\,pp on the next.\\[9pt]
+   {\CardSub\color{gridc}7 of 10 published coordination gains sit below this envelope.}};
+
+% divider
+\draw[linec,line width=2pt] (3,47.4) -- (98.6,47.4);
+
+% ================= column geometry =================
+% left  x=3.0  w=23.0 | center x=28.0 w=45.6 | right x=75.6 w=23.0
+% all section tops on the y=46.2 baseline
+
+% ================= LEFT COLUMN =================
+% ---- §1 problem ----
+\node[eyebrow] at (3,46.2) {§1 · THE PROBLEM};
+\node[colhead] at (3,44.85) {Nobody measures the null};
+\node[body,text width=23cm] at (3,42.65)
+  {Multi-agent papers often claim wins from a few points of benchmark delta.
+   Before trusting a delta you have to know {\medium\color{ink}how much two
+   runs that \emph{shouldn't} differ at all still do.} We measured that gap,
+   with request-equivalent inputs verified by audit.};
+
+% ---- §2 instrument ----
+\node[eyebrow] at (3,34.9) {§2 · THE INSTRUMENT};
+\node[colhead] at (3,33.55) {Three readers, one store};
+\node[capnote,text=inksoft,text width=23cm] at (3,31.35)
+  {$\tau^2$-bench retail · Claude Haiku 4.5 · $T{=}0$ · $n{=}100$ tasks × 2 trials};
+
+% ---- architecture panel: ET-MCP store + the three reader protocols ----
+\node[archbox,minimum width=5.6cm] (agent) at (5.8,28.95) {LLM agent};
+\node[archbox,minimum width=6.0cm] (fw)    at (13.6,28.95) {framework};
+\node[archbox,minimum width=7.6cm] (tools) at (22.2,28.95) {$\tau^2$-bench tools};
+\node[archbox,minimum width=6.4cm,fill=ink,draw=ink,text=white]
+  (store) at (13.6,24.65) {ET-MCP store};
+% MCP call/response channel
+\draw[inksoft,line width=2.4pt,{Stealth[length=9pt]}-{Stealth[length=9pt]}]
+  (agent) -- (fw);
+\draw[inksoft,line width=2.4pt,{Stealth[length=9pt]}-{Stealth[length=9pt]}]
+  (fw) -- (tools);
+% writer (all protocols): failed trials append events
+\draw[ink,line width=2.4pt,-{Stealth[length=10pt]}] (12.4,28.1) -- (12.4,25.5);
+\node[archlab,anchor=east,align=right] at (11.9,26.8)
+  {failed trials\\append events};
+% intercept: framework consults the store on every call
+\draw[interceptc,line width=3pt,-{Stealth[length=10pt]}] (14.8,25.5) -- (14.8,28.1);
+\node[archlab,anchor=west] at (15.3,26.8)
+  {{\MonoSmall\color{interceptc}intercept}\\injects warning per call};
+% pull: agent reads a summary once, at trial start
+\draw[pullc,line width=3pt,rounded corners=6pt,-{Stealth[length=10pt]}]
+  (10.4,24.1) -| (4.0,28.1);
+\node[archlab,anchor=north west] at (4.45,23.6)
+  {{\MonoSmall\color{pullc}pull} reads a summary at trial start};
+% no_coord: the read path does not exist
+\draw[nocoord,line width=2.4pt,dash pattern=on 4pt off 4pt] (16.8,24.2) -- (18.5,24.2);
+\draw[nocoord,line width=2.4pt] (18.15,23.85) -- (18.85,24.55);
+\node[archlab,anchor=west] at (19.2,24.2)
+  {{\MonoSmall\color{nocoord}no\_coord}\\nobody reads};
+\node[redcard,inner xsep=1.0cm,inner ysep=0.9cm,text width=20.8cm,font=\CapFont]
+  at (3,21.7)
+  {\color{ink}The store is empty at trial 0, so every reader is a no-op.
+   {\medium\color{redink}Any gap between protocols there can only be noise.}};
+
+% ---- §3 metric ----
+\node[eyebrow] at (3,16.2) {§3 · THE METRIC};
+\node[colhead] at (3,14.85) {Coordination-active pass$^{k}$};
+\node[body,text width=23cm] at (3,12.65)
+  {Score only the trials where the store is non-empty, so coordination could
+   actually act. On Sonnet this exposed a −16.7\,pp trial-0 deficit that
+   marginal pass$^{k}$ hid behind a +23\,pp ``gain''.};
+\node[capnote,text width=23cm] at (3,6.9)
+  {Detecting +10\,pp takes about 250 paired tasks; one seed of the public
+   114-task set resolves only effects of 15\,pp and larger.};
+
+% ================= CENTER COLUMN =================
+\node[eyebrow] at (28,46.2) {§4 · THE NOISE FLOOR};
+\node[colhead] at (28,44.85)
+  {The floor runs from −3 to +18 pp depending on the setting};
+
+% ---- hero chart, drawn at poster scale (data = fig_noise_floor.pdf) ----
+% y(v) = 31.5 + 0.31*v  for v in pp; plot x 31.2..71.9, panels of width 9.95
+\node[card,minimum width=45.6cm,minimum height=20.4cm] at (28,42.65) {};
+% legend: one chip per protocol contrast
+\foreach \i/\lx/\lc/\ll in {0/37.9/interceptc/{no\_coord − intercept},
+                            1/47.5/pullc/{pull − no\_coord},
+                            2/55.4/nocoord/{pull − intercept}}{
+  \fill[\lc,rounded corners=2pt] (\lx,41.75) rectangle ({\lx+0.75},41.0);
+  \node[anchor=west,text=inksoft,font=\MonoSmall] at ({\lx+1.05},41.38) {\ll};
+}
+% pooled band + max-upper-CI line (Haiku retail panels only)
+\fill[redwash] (31.2,30.88) rectangle (51.35,35.22);
+\draw[sigred,line width=1.8pt,dash pattern=on 5pt off 5pt] (31.2,36.15) -- (51.35,36.15);
+% gridlines, y labels, unit
+\foreach \v in {-20,-10,10,20}
+  \draw[gridc,line width=1.2pt] (31.2,{31.5+0.31*\v}) -- (71.9,{31.5+0.31*\v});
+\foreach \v/\l in {-20/{−20},-10/{−10},0/0,10/{+10},20/{+20}}
+  \node[anchor=east,text=inkfaint,font=\MonoSmall] at (30.9,{31.5+0.31*\v}) {\l};
+\node[rotate=90,text=inkfaint,font=\MonoSmall] at (28.95,31.5)
+  {signed paired gap (pp)};
+% panel separators + titles
+\foreach \p/\ta/\tb in {0/{Haiku retail}/{seed 1 · n=100},
+                        1/{Haiku retail}/{seed 2 · n=100},
+                        2/{Haiku airline}/{n=30},
+                        3/{Sonnet retail}/{n=30}}{
+  \node[anchor=north,text=ink,font=\CapFont\medium] at ({31.2+\p*10.17+4.97},40.35) {\ta};
+  \node[anchor=north,text=inkfaint,font=\MonoSmall] at ({31.2+\p*10.17+4.97},39.4) {\tb};
+}
+\foreach \p in {1,2,3}
+  \draw[linec,line width=1pt] ({31.2+\p*10.17-0.11},24.7) -- ({31.2+\p*10.17-0.11},38.2);
+% bars: panel p, slot j at x = 31.2+p*10.17+0.95+j*2.85, width 2.3
+\foreach \p/\j/\c/\v/\lab in {
+    0/0/interceptc/10/{+10}, 0/1/pullc/8/{+8}, 0/2/nocoord/18/{+18*}}{
+  \fill[\c] ({31.2+\p*10.17+0.95+\j*2.85},31.5)
+    rectangle ({31.2+\p*10.17+0.95+\j*2.85+2.3},{31.5+0.31*\v});
+  \node[anchor=south,text=ink,font=\CapFont\medium]
+    at ({31.2+\p*10.17+0.95+\j*2.85+1.15},{31.5+0.31*\v+0.1}) {\lab};
+}
+\foreach \p/\j/\c/\v/\lab in {
+    1/1/pullc/-3/{−3}, 1/2/nocoord/-3/{−3},
+    3/0/interceptc/-3.3/{−3.3}, 3/1/pullc/-16.7/{−16.7}, 3/2/nocoord/-20/{−20}}{
+  \fill[\c] ({31.2+\p*10.17+0.95+\j*2.85},31.5)
+    rectangle ({31.2+\p*10.17+0.95+\j*2.85+2.3},{31.5+0.31*\v});
+  \node[anchor=north,text=ink,font=\CapFont\medium]
+    at ({31.2+\p*10.17+0.95+\j*2.85+1.15},{31.5+0.31*\v-0.1}) {\lab};
+}
+% non-significant zero stubs (outlined)
+\foreach \p/\j/\c in {1/0/interceptc, 2/0/interceptc, 2/1/pullc, 2/2/nocoord}{
+  \draw[\c,line width=1.4pt,fill=\c!22]
+    ({31.2+\p*10.17+0.95+\j*2.85},31.5)
+    rectangle ({31.2+\p*10.17+0.95+\j*2.85+2.3},31.78);
+}
+\node[anchor=south,text=inkfaint,font=\MonoSmall] at ({31.2+0.95+1.15+10.17},32.0)
+  {0 (n.s.)};
+\node[anchor=south,text=inkfaint,font=\MonoSmall] at ({31.2+2*10.17+4.97},32.0)
+  {all 0 (n.s.)};
+% zero axis
+\draw[ink,line width=1.6pt] (31.2,31.5) -- (71.9,31.5);
+% CI annotations (drawn last so gridlines sit behind their backing)
+\node[anchor=west,text=sigred,font=\MonoSmall,fill=cardbg,inner sep=3pt] at (52.0,36.15)
+  {max pooled upper CI ≈15 pp};
+\node[anchor=west,text=sigred,font=\MonoSmall,fill=cardbg,inner sep=3pt] at (52.0,34.7)
+  {pooled clean CI [−2,+12] pp};
+% caption
+\node[capnote,text width=43cm] at (29.3,23.85)
+  {Trial-0 signed paired gaps. * = significant at seed 1 only; the effect
+   vanished at seed 2 (red box below).};
+
+% retraction callout
+\node[redcard,inner xsep=1.3cm,inner ysep=1.0cm,text width=43cm,font=\BodyFont]
+  at (28,21.45)
+  {{\MonoFont\color{redink}THE PROTOCOL CAUGHT ITS OWN ARTIFACT}\\[9pt]
+   \color{ink}Seed 1: +18\,pp, $p_{\mathrm{corr}}{=}0.012$ — publishable by
+   common practice. Seed 2, same tasks: −3\,pp.
+   {\medium\color{redink}The sign flipped; we retracted it.}
+   Pooled, nothing survives Bonferroni.};
+
+% key numbers strip
+\foreach \i/\num/\lab in {
+    0/{[−3,+18]}/{observed envelope, two n=100 seeds},
+    1/{[−2,+12]}/{pooled clean-contrast CI},
+    2/{≈15}/{largest pooled upper CI},
+    3/{≤3}/{pure API stochasticity (replicate)}}{
+  \node[card,rounded corners=10pt,inner sep=0.7cm,text width=9.1cm,
+        minimum height=5.1cm] at ({28+\i*11.7},14.75) {};
+  \node[anchor=north west,text=redink,font=\NumFont] at ({28+\i*11.7+0.7},14.0)
+    {\num\,{\fontsize{28}{32}\selectfont pp}};
+  \node[capnote,text=inksoft,text width=9.1cm] at ({28+\i*11.7+0.7},12.0) {\lab};
+}
+
+% takeaway bar
+\node[darkcard,inner xsep=1.3cm,inner ysep=1.0cm,text width=43cm] at (28,8.8)
+  {\color{white}Report a same-model paired floor next to any multi-agent
+   delta.\\[7pt]
+   {\CardSub\color{gridc}Run a paired $n{=}30$ probe first; go to $n{\geq}100$
+   only if the claimed effect lands within $2\times$ the probe's upper CI.}};
+
+% ================= RIGHT COLUMN =================
+% ---- §5 literature ----
+\node[eyebrow] at (75.6,46.2) {§5 · PUBLISHED GAINS VS.\ THE FLOOR};
+\node[colhead] at (75.6,44.85) {7 of 10 fall below our floor};
+
+\begin{scope}[shift={(75.6,31.9)}]  % lit dot strip; x maps 0..25pp onto \w cm
+  \pgfmathsetmacro{\w}{22.6}
+  \newcommand{\px}[1]{{(#1)/25*\w}}
+  \fill[redwash] (0,0) rectangle (\px{12},8.6);
+  \fill[redwash!55!paperbg] (\px{12},0) rectangle (\px{15},8.6);
+  \draw[sigred,line width=1.6pt,dash pattern=on 6pt off 6pt] (\px{15},0) -- (\px{15},9.2);
+  \node[anchor=south west,text=sigred,font=\MonoSmall] at (0.2,9.4) {NOISE ENVELOPE};
+  \node[anchor=south west,text=sigred,font=\MonoSmall] at (\px{15.3},9.4) {≈15 pp};
+  \draw[linec,line width=1.4pt] (0,0) -- (\w,0);
+  \foreach \v in {0,5,10,15,20,25}{
+    \draw[linec,line width=1.4pt] (\px{\v},0) -- (\px{\v},-0.35);
+    \node[anchor=north,text=inkfaint,font=\MonoSmall] at (\px{\v},-0.55) {+\v};
+  }
+  \node[anchor=north east,text=inkfaint,font=\MonoSmall] at (\w,-1.75)
+    {reported effect (pp)};
+  \foreach \v/\r/\c/\l/\lx in {1.2/2/sigred/CA-MCP/0, 1.85/1/sigred/Terrarium/-0.4, 1.8/0/sigred/AgentVerse/0,
+                           6/2/sigred/AutoGen/0, 6/1/sigred/Silo-Bench/0.4, 9/0/sigred/MetaGPT/0,
+                           11/2/sigred/Reflexion/0, 13.5/1/amber/{Ou et al.}/0,
+                           17.5/0/okgreen/{Ou et al.}/0, 22/1.5/okgreen/Reflexion/0}{
+    \fill[\c] (\px{\v},{1.7+\r*2.5}) circle (0.42);
+    \draw[white,line width=1.4pt] (\px{\v},{1.7+\r*2.5}) circle (0.42);
+    \node[anchor=north,text=inksoft,font=\MonoSmall] at ({(\v)/25*\w+\lx},{1.7+\r*2.5-0.68}) {\l};
+  }
+\end{scope}
+% dot-color legend
+\foreach \i/\lx/\lc/\ll in {0/75.6/sigred/{below local floor}, 1/84.0/amber/{inside band},
+                            2/90.0/okgreen/{above band}}{
+  \fill[\lc] ({\lx+0.3},28.72) circle (0.3);
+  \node[anchor=base west,text=inksoft,font=\MonoSmall] at ({\lx+0.85},28.52) {\ll};
+}
+\node[capnote,text width=23cm] at (75.6,27.5)
+  {These effects come from different settings; none has been rechecked
+   against a paired floor of its own.};
+
+% ---- §6 oracle ----
+\node[eyebrow] at (75.6,24.4) {§6 · POSITIVE CONTROL};
+\node[colhead,text width=23cm] at (75.6,23.05)
+  {A golden-action oracle barely separates};
+\node[body,text width=23cm] at (75.6,19.15)
+  {An oracle arm injects the task's golden action sequence after each failed
+   trial. Recovery moves from 0.35 to just 0.43 ($p{=}0.79$):
+   {\medium\color{redink}57\% of retries fail with the answer in the prompt.}
+   The failing subset is not knowledge-limited.};
+
+% ---- links footer (QR carries the full URL) ----
+\node[card,rounded corners=10pt,minimum width=22.8cm,minimum height=6.4cm]
+  at (75.6,10.6) {};
+\node[anchor=north west,inner sep=0pt] at (76.6,9.6)
+  {\includegraphics[width=4.4cm]{figs/qr_site.png}};
+\node[anchor=north west,text=ink,font=\MonoSmall,align=left] at (81.9,9.55)
+  {SCAN · PAPER + INTERACTIVE EXPLAINER\\[4pt]
+   \color{redink}abekek.github.io/\\
+   \color{redink}coordination-noise-floor-protocol\\[4pt]
+   \color{inksoft}CODE + DATA (MIT): github.com/abekek};
+
+\end{tikzpicture}
+\end{document}
